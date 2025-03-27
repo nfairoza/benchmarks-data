@@ -1,0 +1,10 @@
+[Unit]
+Description=Autobench - Run Benchmarks
+After=nflx.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/autobench/run-benchmarks
+
+[Install]
+WantedBy=multi-user.target

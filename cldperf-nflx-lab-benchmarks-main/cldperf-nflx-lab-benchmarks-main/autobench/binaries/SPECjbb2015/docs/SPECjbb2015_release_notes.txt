@@ -1,0 +1,133 @@
+SPECjbb2015   -   SPECjbb2015_release_notes.txt     -     Oct 4, 2019
+----------------------------------------------------------------------
+
+The SPECjbb2015 benchmark v1.03 release includes the following changes in comparison with the SPECjbb2015 v1.02
+
+Code changes:
+  - Fixed an extremely occassional race-condition that could result in a hang.
+    See the ./docs/SPECjbb2015-KnownIssues.html document for more information.
+  - The performance for older Java versions (up to 1.13) should be the same as SPECjbb2015 v1.02
+
+Build updates:
+  - 4 affected files were patched
+  - the signatures for the classes had to be updated to match the modifications
+
+Document updates:
+  - Various documents were updated to add clarifications and to sync content with their web-site counterparts.
+---------------
+
+The SPECjbb2015 benchmark v1.02 release includes the following changes in comparison with the SPECjbb2015 v1.01
+
+Code changes:
+  - Fix for issue of removed JAXB API in JDK11
+  - The performance for older Java versions (up to 1.10) should be the same as SPECjbb2015 v1.01
+
+Build updates:
+  - the signatures for the classes had to be updated to match the modifications
+  - the build is now using 4 bundled-libraries for JAXB on JDK11
+---------------
+
+The SPECjbb2015 benchmark v1.01 release includes the following changes in comparison with the SPECjbb2015 v1.00
+
+Code changes:
+  - Fix for #530: Java version parse for Java 9 is fixed, to address a performance regression due to incorrect version identification as being prior to 1.7
+  - The performance for older Java versions (up to 1.8) should be the same as SPECjbb2015 v1.00
+  - Only the version parsing class in grizzly-framework-2.3.19 was fixed, the rest of modifications are related to version and date changes
+
+Build updates:
+  - the signatures for the classes had to be updated to match the modifications
+  - the build is now taking the libraries from the local ./maven-repo directory instead of the online repository (maven.org)
+---------------
+
+The SPECjbb2015 benchmark v1.00 release includes the following changes in comparison with the retired SPECjbb2013 v1.00 benchmark.
+
+Code changes:
+
+  - All messages go to the separate Tier3 while requests are handled in Tier1/Tier2 in the default benchmark configuration.
+    This helps replenish messages to be processed faster and eliminates partial transaction execution.
+
+  - Added partial/failed transactions tracking from the Backend side to the Controller output.
+
+  - Only successful transactions are counted towards PR, but all the partial/failed transactions are subtracted from the PR. 
+
+  - Added receipts number tracking and average barcodes number (per receipt) tracking from the Backend side to the Controller output.
+
+  - Separated inventory product quantity and replenish product quantity. Allowed multiple replenish requests for one product.
+    So replenish is more adaptable to increasing rate and can send multiple requests in parallel if throughput increases.
+
+  - Do not allow empty receipt generation if no item for purchasing is present in SM and the purchase transaction fails.
+
+  - 99% of items customer planned to buy during specific purchase transaction should be available in SM for this purchase transaction to succeed.
+
+  - Product replenish is triggered early when 90% of initial product quantity is left in SM store.
+
+  - Tighten accuracy of actual IR/PR to the requested IR from 3% to 1% during the RT curve building.
+
+  - Increased the number of overall retries Controller is allowed to do during RT curve building from 5 to 10.
+
+  - Added possibility to launch the benchmark components in any order. No need to start Controller first.
+
+  - Updated critical-jOPS SLAs from (10, 50, 100, 200, 500) msec to (10, 25, 50, 75, 100) msec.
+
+  - Implemented Time Server component running outside of SUT to support running the benchmark in virtualized environments.
+    So for Composite/MultiJVM modes Controller can verify local time on virtualized SUT against the Time Server time running on the native host.
+
+  - Allowed running multiple Groups in Composite mode.
+
+  - Introduced user-settable property for using different number of FJ workers in different Tiers.
+
+  - Introduced user-settable property for controlling Grizzly pool size.
+
+  - Renamed user-settable properties related to connection pool configuration.
+
+  - Updated Controller output to contain response time information for failed RT points.
+
+  - Eliminated excess non-mandatory "-d <distribution>" option from the Backend launch command.
+  
+  - Fixed NullPointerException during report generation if a user redefines specific multi-property value, 
+    but the corresponding global multi-property value was not set.
+
+  - Fixed possible IllegalArgumentException during report generation when building the performance delay graph.
+
+  - Disallowed empty field values in the result report for SUT/Driver description and configuration. 
+    For the valid report generation "None" or "N/A" should be used as the field value in the raw file if nothing applicable.
+
+  - Removed excess 'Tuning' field from the SUT/Driver Description. 
+    
+  - Topology and SUT/Driver Configuration sections were placed next to the SUT/Driver Description in the result report.
+
+  - Fixed cascading style sheets propagation to sub-reports of the Advanced / Ultimate report.
+
+  - Updated Executors naming in the Advanced / Ultimate report.
+
+  - Fixed ForkJoin statistics sub-report of the Ultimate report.
+
+  - Eliminate 'testedByName' info from the report header.
+
+Run scripts updates:
+
+  - Controller is now started last in Windows *.bat scripts and moved out from background.
+    So script exiting identifies that the benchmark run has finished.
+
+  - Added possibility for consecutive runs in run_composite.* and run_multi.* scripts.
+
+  - Timestamp result directory is now created for each run for storing run logs and binary result file.
+
+  - Added special variables for passing optional run mode arguments to the specjbb2015.jar.
+
+  - Added possibility to run Backends on several SUT's in run_distributed_sut.*
+
+Build updates:
+
+  - Updated 3-party libraries used during the benchmark run to the latest versions.
+
+  - Created document describing the benchmark build steps.
+
+
+For the latest documentation and support please refer to the SPEC web site at http://www.spec.org/jbb2015/.
+
+Happy Benchmarking!
+
+------------------------------------------------------------------------
+Copyright 2007-2019 Standard Performance Evaluation Corporation (SPEC)
+All rights reserved.

@@ -1,0 +1,9 @@
+- Increase the array size: Try setting it to at least 4x or 8x your last-level cache size. A common recommendation is 4-8 GiB per array.
+
+#define STREAM_ARRAY_SIZE 320000000  /* Increase from 80M elements to 320M */
+
+- Increase the number of iterations: The benchmark runs only 10 iterations, which may not be enough for accurate results.
+#define NTIMES 100  /* Increase iterations */
+
+Compile option:
+gcc -O3 -fopenmp -DSTREAM_ARRAY_SIZE=320000000 -mcmodel=large stream.c -o stream-bin

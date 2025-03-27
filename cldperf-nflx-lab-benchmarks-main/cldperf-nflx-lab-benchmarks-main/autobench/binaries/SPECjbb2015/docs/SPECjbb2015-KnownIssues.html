@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title>The SPECjbb2015 Benchmark - Known Issues</title>
+  
+  <meta name="robots" content="noindex">
+ </head>
+<body style="background-color: rgb(255, 255, 255);">
+<font face="arial" size="2"><a name="PageTop"></a>
+</font>
+<h3><font face="arial" size="2"><a name="FAQ_TOC"> </a> The SPECjbb2015 Benchmark - Known Issues (October 4, 2019)</font></h3>
+<div class="twikiToc">
+<font face="arial" size="2"> </font>
+
+<p>
+<font face="arial" size="2">This is a place where SPEC has collected descriptions (and solutions) to installation, build, and runtime problems encountered by people using the SPECjbb2015 benchmark. If your issue is not amongst the known issues, please bring it to the attention of SPECjbb2015 Support via e-mail to: <a href="mailto:jbb2015support@spec.org">support@spec.org</a> with "SPECjbb" in the subject line.
+</font></p>
+
+<h4><font face="arial" size="2"><a name="Issue_1"> </a>
+The reported default value for specjbb.forkjoin.workers is different from what I've previously seen </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li> As of Java SE 8u131 and Java SE 9 (and later), a bug fix [<a href="https://bugs.openjdk.java.net/browse/JDK-6515172">JDK-6515172</a>] was made that corrected the behavior of the <b><code>availableProcessors()</code></b> API in Java. The API is defined to return the number of processors available to the JVM. Prior to these Java SE releases, it always reported the total number of HW processors available on the machine. It now reports the number of processors available to the JVM as limited by Processor and NUMA bindings.</li>
+  <li>Regardless of the Java SE release, the default value is not expected to be an optimal setting for any given SUT.  <u>It is customary practice, and recommended, that the user set this property to a optimal value for their SUT.</u></li>
+  &nbsp;
+  <li> Details: 
+    <ul>
+      <li>Given that <b><code>availableProcessors()</code></b> was always returning the total number of processors on the system, the default value for <b><code>specjbb.forkjoin.workers</code></b> was consistent as reported in the "Run properties" section of SPECjbb2015 report. Now that it returns the number of processors available to the JVM (limited by the CPU and NUMA bindings), the reported default value can change.</li>
+      <li>Note: the default value was intended to reflect the number of processors available to the backend group, however it is actually determined based on where the controller JVM is running. This has not been an issue because the default value is not expected to be an optimal setting for any given SUT. It is always over-ridden by the user to be an optimal value for their SUT.</li>
+      <li>Based on benchmark code and architecture review, it was identified that SPECjbb2015 had the following uses of <b><code>availableProcessors()</code></b>:
+        <ul>
+          <li>Two user settable properties defined in the SPECjbb2015 configuration file: <b><code>specjbb.forkjoin.workers</code></b> and <b><code>specjbb.mapreducer.pool.size</code></b> default to the value returned. Both are always over-ridden by the user to be an optimal value for their specific SUT.</li>
+          <li>Three properties <b><code>specjbb.queue.stripes</code></b>, <b><code>specjbb.counter.threadhash.cap.bound</code></b> and <b><code>specjbb.interconnect.timers.pool.size</code></b> are internal properties which are not user settable. During the testing up to 8 chips system, the <b><code>availableProcessors()</code></b> change was determined to be performance neutral.</li>
+          <li>Three places, <code>src\main\java\org\spec\jbb\infra\TransferLogsReceiverAgent.java</code>, <code>src\main\java\org\spec\jbb\Launcher.java</code> and <code>src\main\java\org\spec\jbb\reporter\StreamingSourceData.java</code> the use of <b><code>availableProcessors()</code></b> is hard-coded. During the testing up to 8 chips system, the <b><code>availableProcessors()</code></b> change was determined to be performance neutral.</li>
+        </ul>
+      </li>
+      Overall impact from this change to <b><code>availableProcessors()</code></b> has been performance neutral. 
+    </ul>
+  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_2"> </a>
+Response time spikes in Response-Throughput (RT) graph in the HTML report </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li> When using generational GC policies where full system GC (Garbage Collection) takes much longer than regular nursery GC time, RT graph will show many spikes in response time which mostly corresponds to RT step level where old generation GC with long pauses happens. RT graph is built by increasing the IR (Injection Rate) in 1% increments of HBIR (High Bound Injection Rate) and observing each step for settling (3 sec min and 30 sec maximum) and 60 sec steady state. Since the intent is to keep the total benchmark run length reasonable, each RT step level is tested for around 60 sec steady state. This 60 sec of steady state of each RT step is not long enough to capture old generational GCs whose frequency is every ~5-10 minutes based on heap size and system capacity. As a result, RT steps where old generational GC occurs show higher 99th percentile response time compared to other RT steps. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_3"> </a>
+In some cases, benchmark metric "max-jOPS" run-to-run variability could be high </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li> Metric "max-jOPS" is determined during RT graph building. RT graph building starts from 0% step while increasing the IR (Injection Rate) in 1% increments of HBIR (High Bound Injection Rate) and observing each step for settling (3 sec min and 30 sec maximum) and 60 sec steady state. Each RT step is evaluated for a passing criterion. The successful IR of the RT step just before the RT step where passing criterion fails (call First Failure), is called "max-jOPS". Since each RT step is evaluated for 60 sec, if a very long GC pause happens, it is possible that First Failure may happen much before the full system capacity is reached. In this case, user will observe max-jOPS red color line in RT graph much earlier than usual end of the graph. Even after First Failure, benchmark keep testing RT step levels unless three continuous RT steps fail. This is to show user more clearly as where the failures of RT steps are happening. User can also look at the IR/PR accuracy graph at the end of the HTML report to observe passing criterion details. In above evaluation criterion, if long GC pause duration and/or its temporal location in RT graph have variability, this will result in "max-JOPS" run-to-run variability. On most systems, we tested very small run-to-run variability. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_4"> </a>
+Benchmark metric "critical-jOPS" run-to-run variability could be high </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li> Metric "critical-jOPS" is calculated based on 99th percentile of response time from all RT step level till full system capacity "max-jOPS" is reached. Criterion for critical-jOPS is 99th percentile of response time which is very sensitive to GC pauses. On most system tested with optimized configuration, critical-jOPS has very small run-to-run variability. Any configuration where long GC pause durations and temporal locations are random, critical-jOPS may show more run-to-run variability. In particular, systems running Suse Linux OS exhibited very high run-to-run variability. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_5"> </a>
+In rare cases, benchmark metric max-jOPS &gt; 100% HBIR </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li> Initial phase of the benchmark determines a rough approximation of full system capacity called HBIR (High Bound Injection Rate). On most systems tested, max-jOPS occurs around 80-90% of HBIR. In some rare cases, it is possible that max-jOPS &gt; 100% HBIR. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_6"> </a>
+Scaling of &gt;16 groups inside a single OS image </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>In testing, benchmark scales very well when running large number of groups across multiple OS images. When testing inside a single OS image, scaling is reasonable up to 16 groups. When running &gt;16 groups, scaling of max-jOPS and critical-jOPS is poor due to some network resource related bottleneck inside a single OS image. Once more accurate reason is identified; this document will be accordingly updated.  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_7"> </a>
+No connections among SPECjbb2015-Distributed instances running across OS images when firewall enabled </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>SPECjbb2015-Distributed instances running across OS images may not be able to connect if firewall is enabled. Firewall blocks the TCP-IP communication among Java instances running across OS images and as a result different Java instances are not able to communicate with each other. Disabling the firewall should resolve this issue.  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_8"> </a>
+CPU utilization of less than 90% </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>With good optimizations and tuning a user should be able to achieve ~90% of CPU utilization. It is suggested that if CPU utilization is &lt;90%, - Dspecjbb.forkjoin.workers=  could be set 2 x that of available processor threads for each backend for better performance. Benchmark by default tries to set this property to available processor threads but affinity and/or running multiple groups configuration makes it complex for the benchmark to determine the optimal value for this setting. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_9"> </a>
+Exception at the beginning of the run </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>When multiple instances take longer time for the handshake with the controller, it results in exceptions being thrown. These are harmless exceptions and can be ignored.  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_10"> </a>
+Submit errors during the run </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>During the benchmark run, "submit error" message is reported for several cases. Some of these exceptions are fatal while others are harmless. Please refer to controller log for more detailed information about these error messages.  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_11"> </a>
+A "Validation level CORRECTNESS is missing from the Validation Reports" error occurs </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>During the benchmark run, an attempt is made to test the load 3 steps above the max-jOPs to showcase that max-jOPS determined is indeed the full system sustained capacity and not much lower max-jOPS resulted as example from a severe glitch of full system GC etc. Some systems may not be able to recover from this 3 steps above the max-jOPS load and validation is skipped resulting in this error. In such cases the user tunable property "specjbb.controller.maxir.maxFailedPoints" can be lowered to value of "1" which should help the system recover and not skip the validation.  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_12"> </a>
+After a completed benchmark run, the ssh session is closed </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>This behavior can be changed by removing the 'exit 0' line from the end of the script used to run the benchmark. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_13"> </a>
+All benchmark results are located in the benchmark root directory </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>Benchmark results can be located anywhere by editing line in *.sh from 'result=./$timestamp' to 'result=./result_dir/$timestamp' or in *.bat from 'set result=%timestamp: =0%' to 'set result=result_dir\%timestamp: =0%' in the script use to run the benchmark to include the desired path. </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_14"> </a>
+Missing Maven dependency POM file for the grizzly-framework</font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li><p>When building experimental versions of the benchmark the removal of a grizzly-framework artifact from public Maven repository may cause the build to fail.
+<blockquote>[WARNING] The POM for org.glassfish.grizzly:grizzly-framework:jar:2.3.19_p1_internal is missing, no dependency information available</blockquote>
+<p>Users can workaround this issue by using the Maven Install plugins <a href="https://maven.apache.org/plugins/maven-install-plugin/install-file-mojo.html">install-file</a> goal. To install the missing POM file and artifact to the users local Maven repository. Use the following example to complete the install.</p>
+<div id="dependency-install-example"><blockquote>$ mkdir tmp-grizzly-framework<br/>
+$ unzip -q lib/grizzly-framework-*.jar -d tmp-grizzly-framework/<br/>
+$ ls tmp-grizzly-framework/META-INF/maven/org.glassfish.grizzly/grizzly-framework/pom.xml<br/> 
+tmp-grizzly-framework/META-INF/maven/org.glassfish.grizzly/grizzly-framework/pom.xml<br/>
+$ mvn install:install-file -DgroupId=org.glassfish.grizzly -DartifactId=grizzly-framework -Dpackaging=jar -Dversion=2.3.19_p1_internal -Dfile=lib/grizzly-framework-2.3.19_p1_internal.jar -DpomFile=tmp-grizzly-framework/META-INF/maven/org.glassfish.grizzly/grizzly-framework/pom.xml</blockquote></div>
+<p>For the kit 1.02 release two bespoke JAXB artifacts are used. It means the same type of issue <i>may</i> occur after the release. These are the Maven co-ordinates of the bespoke artifacts.</p>
+<blockquote>com.sun.xml.bind:jaxb-api:jar:2.4.0-b180830.0359<br/>
+ com.sun.xml.bind:jaxb-impl:jar:2.4.0-b180830.0438</blockquote>
+<p>Use the above <a href="#dependency-install-example">example</a> to install the missing Maven artifacts.</p></li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_15"> </a>
+You're seeing a "Too many open files" error message in your Txinjector log files.</font></h4>
+<ul>
+<font face="arial" size="2">
+<li>Here's an example of what the message looks like:
+</li>
+<ul>
+<code>&lt;Thu Nov 08 02:42:07 PST 2018&gt; org.spec.jbb.driver: Submit Error for InStore Purchase, isSaturate = false : Transaction Error: Transaction had failed (non-fatal); caused by org.spec.jbb.sm.tx.NotEnoughCreditException: Not enough credit, got Error: Communication problem; caused by java.io.IOException: NIO Client threw unexpected exception; caused by org.spec.jbb.core.objectpool.PoolException: Exception while connecting to 127.0.0.1:46599; caused by java.util.concurrent.ExecutionException: java.net.SocketException: Too many open files; caused by java.net.SocketException: Too many open files</code>
+</ul>
+<li>This has been seen when using a JDK-11 release, though it can occur with any release. To address this, you need to increase the OS's file descriptor (fd) limit. We've found that 64K is sufficient in our testing, but the setting may need to be different depending on your SUT.
+</li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_16"> </a>
+The reporter fails with a "java.lang.InternalError: java.lang.reflect.InvocationTargetException"</font></h4>
+<ul>
+<font face="arial" size="2">
+<li>If you are using Oracle Java 11 (or later), and the reporter fails with an exception whose trace begins with:</li>
+<ul>
+<code>java.lang.InternalError: java.lang.reflect.InvocationTargetException<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at java.desktop/sun.font.FontManagerFactory$1.run(FontManagerFactory.java:86)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...</code>
+</ul>
+<li>This is because, starting in Oracle Java 11, licensed fonts were removed from the release as part of the effort to make OracleJDK and OpenJDK equivalent. OracleJDK now relies on the OS to provide the fonts (or replacement fonts).</li>
+<ul>
+<li>To date, we have only had reports of missing fonts from some of the minimally packaged OS bundles.</li>
+</ul>
+<li><b>To correct the font issue, do one of the following:</b></li>
+<ol>
+<li>Run the benchmark on an OS that bundles the needed fonts.</li>
+<li>Install the missing fonts onto your OS.</li>
+<li>Run the reporter separately using an earlier JDK release, giving it the raw file generated from the benchmark run. See the run scripts included with the benchmark kit for details, but as an example, you can run the reporter similar to this:</li>
+<ul>
+<li><code>java -jar specjbb2015.jar -m reporter -raw specjbb2015-M-20181108-00001.raw</code></li>
+</ul>
+</ol>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_17"> </a>
+Reporter fails to generate plots in the result report </font></h4>
+<ul>
+<font face="arial" size="2">
+<li>If Java exceptions relating to "font" are occurring while generating the report, the "fontconfig" package may be missing. Install the "fontconfig" package on the operating system. Ex:
+<ul>
+<li> Linux (Ubuntu):
+<ul>
+<li> $ apt install fontconfig </li>
+</ul>
+</li>
+<li> AIX:
+<ul>
+<li> Download "fontconfig-2.11.95-3.aix6.1.ppc.rpm" and "freetype2-2.8-1.aix6.1.ppc.rpm" from <a href="https://www.ibm.com/developerworks/aix/library/aix-toolbox/alpha.html" target="_top">IBM's AIX Toolbox</a></li>
+<li> $ rpm -i fontconfig-2.11.95-3.aix6.1.ppc.rpm freetype2-2.8-1.aix6.1.ppc.rpm </li>
+</ul>
+</li>
+</ul>
+</li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_18"> </a>
+Using Java SE 9 and Java SE 10 with the benchmark </font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>Due to a change introduced with the Java module system, you need to add the following option to your java execute line(s) in your run scripts.
+    <ul>
+      <li> <b><code>--add-modules=java.xml.bind</code></b></li>
+    </ul>
+  </li>
+  <li>When using any other release, you are not allowed to submit using this option.
+  </li>
+</font></ul><font face="arial" size="2">
+
+<h4><font face="arial" size="2"><a name="Issue_19"> </a>
+The benchmark very occassionally hangs.</font></h4>
+<ul>
+  <font face="arial" size="2">
+  <li>A rarely occurring bug was found, and fixed in the v1.03 benchmark.
+    <ul>
+      <li><b>If you are using SPECjbb2015 v1.02 or earlier, please start using the v1.03 kit (or later).</b></li>
+      <li>Overview:</li>
+        <ul>
+          <li>There was a race between the LockManagers and the GC to flush out stale entries from the ConcurrentHashMap of locks causing early collection/processing of Soft/WeakReferences. This resulted in a hash map entry getting stuck in the hash map forever, which caused an infinite loop in <code>LockManager.getLock()</code></li>
+        </ul>
+    </ul>
+  </li>
+</font></ul><font face="arial" size="2">
+
+<br>
+<h5><font face="arial" size="2"><a name="Disclaimer"> </a> Disclaimer </font></h5>
+<p>
+<font face="arial" size="2">
+For latest update to this document, please check here: <a href="http://www.spec.org/jbb2015/docs/knownissues.html">http://www.spec.org/jbb2015/docs/knownissues.html</a>.<br>
+
+Product and service names mentioned herein may be the trademarks of their respective owners.<br>
+Copyright (c) 2007-2019 Standard Performance Evaluation Corporation (SPEC).<br>
+All Rights Reserved.
+</font></p>
+<p><font face="arial" size="2"><a name="PageBottom"></a>
+</font></p>
+
+</font></font></font></font></font></font></font></font></font></font></font></font></div></body></html>

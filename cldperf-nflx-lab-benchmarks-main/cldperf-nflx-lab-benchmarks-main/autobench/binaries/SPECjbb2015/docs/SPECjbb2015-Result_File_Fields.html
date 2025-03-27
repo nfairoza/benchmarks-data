@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta name="Author" content="$Id:  Klaus-Dieter Lange" />
+<title>The SPECjbb2015 Benchmark Result File Fields</title>
+
+<link rel="STYLESHEET" href="jbb2015docs.css" type="text/css" />
+
+</head>
+
+<body>
+
+<div class="center">
+<h1 class="mainbody">The SPECjbb2015 Benchmark Result File Fields</h1>
+<h4>Last updated: October 4, 2019</h4>
+
+<p>To check for possible updates to this document, please see <a href="http://www.spec.org/jbb2015/docs/SPECjbb2015-Result_File_Fields.html">
+http://www.spec.org/jbb2015/docs/SPECjbb2015-Result_File_Fields.html</a></p>
+
+<p><strong>ABSTRACT</strong><br />
+This document describes the various fields in the result file making up the complete the SPECjbb2015 benchmark result disclosure.
+<ul>
+
+<li>
+Main Report File (Composite/Single Host) <span style="color:red">(SPECjbb2015-C.YYYYMMDD-NNNNN.html)</span><br>
+It includes the overall metrics and the detailed desciption of a single JVM running on a single system running a single OS image.
+</li><br>
+
+<li>
+Main Report File (Multi-JVM/Single Host) <span style="color:red">(SPECjbb2015-M.YYYYMMDD-NNNNN.html)</span><br>
+It includes the overall metrics and the detailed desciption of multiple JVMs running on one system running a single one OS image.
+</li><br>
+
+<li>
+Main Report File (Distributed/Single or Multi Host) <span style="color:red">(SPECjbb2015-D.YYYYMMDD-NNNNN.html)</span><br>
+It includes the overall metrics and the detailed desciption of multiple JVMs running on one or more systems running a single or multiple OS image.
+</li><br>
+
+
+</ul>
+</p>
+</div>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<p class="contentsl1"><a name="Dtoc_1" href="#sec_benchmark" >1.SPECjbb2015 Benchmark </a></p>
+
+<p class="contentsl1"><a name="Dtoc_2" href="#sec_main_file" >2.Top Bar </a></p>
+<p class="contentsl2"><a href="#Headline"                    >2.1  Headline </a></p>
+<p class="contentsl2"><a href="#Testsponsor"                 >2.2  Test sponsor </a></p>
+<p class="contentsl2"><a href="#SPEClicense"                 >2.3  SPEC license # </a></p>
+<p class="contentsl2"><a href="#HardwareAvailability"        >2.4  Hardware Availability </a></p>
+<p class="contentsl2"><a href="#Testedby"                    >2.5  Tested by </a></p>
+<p class="contentsl2"><a href="#TestLocation"                >2.6  Test Location </a></p>
+<p class="contentsl2"><a href="#SoftwareAvailability"        >2.7  Software Availability </a></p>
+<p class="contentsl2"><a href="#TestDate"                    >2.8  Test Date </a></p>
+<p class="contentsl2"><a href="#PublicationDate"             >2.9  Publication Date </a></p>
+<p class="contentsl2"><a href="#Invalid"                     >2.10 INVALID or WARNING or COMMENTS</a></p>
+
+<p class="contentsl1"><a name="Dtoc_3" href="#sec_performance" >3.Benchmark Results Summary </a></p>
+<p class="contentsl2"><a href="#category"                      >3.1 Category </a></p>
+<p class="contentsl2"><a href="#result_chart"                  >3.2 Result Chart  </a></p>
+
+<p class="contentsl1"><a name="Dtoc_4" href="#sec_Sut" >4. Overall SUT (System Under Test) Description </a></p>
+<p class="contentsl3"><a href="#SysVendor"                   >4.1 Vendor  </a></p>
+<p class="contentsl3"><a href="#SysURL"                      >4.2 System Vendor URL </a></p>
+<p class="contentsl3"><a href="#SysSource"                   >4.3 System Source </a></p>
+<p class="contentsl3"><a href="#SysDesignation"              >4.4 System Designation </a></p>
+<p class="contentsl3"><a href="#SysCount"                    >4.5 Total System Count </a></p>
+<p class="contentsl3"><a href="#SysCountIdentical"           >4.6 All SUT Systems Identical </a></p>
+<p class="contentsl3"><a href="#SysNodesCount"               >4.7 Total Node Count </a></p>
+<p class="contentsl3"><a href="#SysNodesCountIdentical"      >4.8 All Nodes Identical </a></p>
+<p class="contentsl3"><a href="#SysNodesPerSystem"           >4.9 Nodes Per System </a></p>
+<p class="contentsl3"><a href="#SysTotalChips"               >4.10 Total Chips </a></p>
+<p class="contentsl3"><a href="#SysTotalCores"               >4.11 Total Cores </a></p>
+<p class="contentsl3"><a href="#SysTotalThreads"             >4.12 Total Threads </a></p>
+<p class="contentsl3"><a href="#SysTotalMemory"              >4.13 Total Memory (Gb) </a></p>
+<p class="contentsl3"><a href="#SysTotalOS"                  >4.14 Total OS Images </a></p>
+<p class="contentsl3"><a href="#SysSWEnvrionment"            >4.15 SW Environment </a></p>
+
+<p class="contentsl1"><a name="Dtoc_5" href="#sec_Sys" >5. SUT Description </a></p>
+<p class="contentsl2"><a href="#HW"                          >5.1 Hardware</a></p>
+<p class="contentsl3"><a href="#HWName"                      >5.1.1 HW Name</a></p>
+<p class="contentsl3"><a href="#HWVendor"                    >5.1.2 HW Vendor</a></p>
+<p class="contentsl3"><a href="#HWURL"                       >5.1.3 HW Vendor URL</a></p>
+<p class="contentsl3"><a href="#HWAvail"                     >5.1.4 HW Available</a></p>
+<p class="contentsl3"><a href="#HWModel"                     >5.1.5 Model</a></p>
+<p class="contentsl3"><a href="#HWSysnumber"                 >5.1.6 Number of Systems</a></p>
+<p class="contentsl3"><a href="#HWFormFactor"                >5.1.7 Form Factor</a></p>
+<p class="contentsl3"><a href="#HWNodesPerSystem"            >5.1.8 Nodes Per System</a></p>
+<p class="contentsl3"><a href="#HWCPUName"                   >5.1.9 CPU Name</a></p>
+<p class="contentsl3"><a href="#HWCPUCharacteristics"        >5.1.10 CPU Characteristics</a></p>
+<p class="contentsl3"><a href="#HWChipsPerSystem"            >5.1.11 Chips Per System </a></p>
+<p class="contentsl3"><a href="#HWCoresPerSystem"            >5.1.12 Cores Per System </a></p>
+<p class="contentsl3"><a href="#HWCoresPerChip"              >5.1.13 Cores Per Chip </a></p>
+<p class="contentsl3"><a href="#HWThreadsPerSystem"          >5.1.14 Threads Per System </a></p>
+<p class="contentsl3"><a href="#HWThreadsPerCore"            >5.1.15 Threads Per Core </a></p>
+<p class="contentsl3"><a href="#HWVersion"                   >5.1.16 HW Version </a></p>
+<p class="contentsl3"><a href="#HWCPUFreq"                   >5.1.17 CPU Frequency (MHz) </a></p>
+<p class="contentsl3"><a href="#HWL1Cache"                   >5.1.18 Primary Cache </a></p>
+<p class="contentsl3"><a href="#HWL2Cache"                   >5.1.19 Secondary Cache </a></p>
+<p class="contentsl3"><a href="#HWL3Cache"                   >5.1.20 Tertiary Cache </a></p>
+<p class="contentsl3"><a href="#HWOtherCache"                >5.1.21 Other Cache </a></p>
+<p class="contentsl3"><a href="#HWDiskDrive"                 >5.1.22 Disk Drive </a></p>
+<p class="contentsl3"><a href="#HWFileSystem"                >5.1.23 File System  </a></p>
+<p class="contentsl3"><a href="#HWMemSize"                   >5.1.24 Memory Amount (GB) </a></p>
+<p class="contentsl3"><a href="#HWMemModules"                >5.1.25 # and size of DIMM(s)</a></p>
+<p class="contentsl3"><a href="#HWMemDetails"                >5.1.26 Memory Details</a></p>
+<p class="contentsl3"><a href="#HWNICs_Installed"            >5.1.27 # and type of Network Interface Cards (NICs) Installed</a></p>
+<p class="contentsl3"><a href="#HWPSUCount"                  >5.1.28 Power Supply Quantity and Rating (W)</a></p>
+<p class="contentsl3"><a href="#HWOtherHardware"             >5.1.29 Other Hardware</a></p>
+<p class="contentsl3"><a href="#HWSharedEnclosure"           >5.1.30 Cabinet/Housing/Enclosure</a></p>
+<p class="contentsl3"><a href="#HWSharedDescription"         >5.1.31 Shared Description</a></p>
+<p class="contentsl3"><a href="#HWSharedComment"             >5.1.32 Shared Comment</a></p>
+<p class="contentsl3"><a href="#HWSharedNotes"               >5.1.33 Notes</a></p>
+
+<p class="contentsl2"><a href="#OtherHWSW"                   >5.2 Other Hardware/Software</a></p>
+<p class="contentsl3"><a href="#OtherHWSWName"               >5.2.1 Name</a></p>
+<p class="contentsl3"><a href="#OtherHWSWVendor"             >5.2.2 Vendor</a></p>
+<p class="contentsl3"><a href="#OtherHWSWVendorURL"          >5.2.3 Vendor URL</a></p>
+<p class="contentsl3"><a href="#OtherHWSWVersion"            >5.2.4 Version</a></p>
+<p class="contentsl3"><a href="#OtherHWSWAvail"              >5.2.5 Available</a></p>
+<p class="contentsl3"><a href="#OtherHWSWBits"               >5.2.6 Bitness</a></p>
+<p class="contentsl3"><a href="#OtherHWSWNotes"              >5.2.7 Notes</a></p>
+
+<p class="contentsl2"><a href="#SWOS"                        >5.3 Operating System</a></p>
+<p class="contentsl3"><a href="#SWOSName"                    >5.3.1 OS Name</a></p>
+<p class="contentsl3"><a href="#SWOSVendor"                  >5.3.2 OS Vendor</a></p>
+<p class="contentsl3"><a href="#SWOSVendorURL"               >5.3.3 OS Vendor URL</a></p>
+<p class="contentsl3"><a href="#SWOSVersion"                 >5.3.4 OS Version</a></p>
+<p class="contentsl3"><a href="#SWOSAvail"                   >5.3.5 OS Available</a></p>
+<p class="contentsl3"><a href="#SWOSBits"                    >5.3.6 OS Bitness</a></p>
+<p class="contentsl3"><a href="#SWOSNotes"                   >5.3.7 OS Notes</a></p>
+
+<p class="contentsl2"><a href="#SWJVM"                       >5.4 Java Virtual Machine (JVM)</a></p>
+<p class="contentsl3"><a href="#SWJVMName"                   >5.4.1 JVM Name</a></p>
+<p class="contentsl3"><a href="#SWJVMVendor"                 >5.4.2 JVM Vendor</a></p>
+<p class="contentsl3"><a href="#SWJVMVendorURL"              >5.4.3 JVM Vendor URL</a></p>
+<p class="contentsl3"><a href="#SWJVMVersion"                >5.4.4 JVM Version</a></p>
+<p class="contentsl3"><a href="#SWJVMAvail"                  >5.4.5 JVM Available</a></p>
+<p class="contentsl3"><a href="#SWJVMBits"                   >5.4.6 JVM Bitness</a></p>
+<p class="contentsl3"><a href="#SWJVMNotes"                  >5.4.7 JVM Notes</a></p>
+
+<p class="contentsl1"><a name="Dtoc_6" href="#sec_Topology" >6. Topology </a></p>
+
+<p class="contentsl1"><a name="Dtoc_7" href="#sec_SUTx"        >7. SUT or Driver configuration</a></p>
+<p class="contentsl2"><a href="#SUTxHardware"                  >7.1 Hardware</a></p>
+<p class="contentsl3"><a href="#SUTxHWOS"                      >7.1.1 OS Images</a></p>
+<p class="contentsl3"><a href="#SUTxHWDesc"                    >7.1.2 Hardware Description</a></p>
+<p class="contentsl3"><a href="#SUTxHWSysNum"                  >7.1.3 Number of Systems</a></p>
+<p class="contentsl3"><a href="#SUTxHWSWEnviro"                >7.1.4 SW Environment</a></p>
+<p class="contentsl3"><a href="#SUTxHWTuning"                  >7.1.5 Tuning</a></p>
+<p class="contentsl3"><a href="#SUTxHWNotes"                   >7.1.6 Notes</a></p>
+
+<p class="contentsl2"><a href="#SUTxSWOSI"                     >7.2 OS image</a></p>
+<p class="contentsl3"><a href="#SUTxSWJVM"                     >7.2.1 JVM Instances</a></p>
+<p class="contentsl3"><a href="#SUTxSWOS"                      >7.2.2 OS Image Description</a></p>
+<p class="contentsl3"><a href="#SUTxSWTune"                    >7.2.3 Tuning</a></p>
+<p class="contentsl3"><a href="#SUTxSWNote"                    >7.2.4 Notes</a></p>
+
+<p class="contentsl3"><a href="#SUTxSWJVMI"                    >7.3 JVM Instance</a></p>
+<p class="contentsl3"><a href="#SUTxSWJVMParts"                >7.3.1 Parts of Benchmark</a></p>
+<p class="contentsl3"><a href="#SUTxSWJVMDe"                   >7.3.2 JVM Instance Description</a></p>
+<p class="contentsl3"><a href="#SUTxSWJVMCLI"                  >7.3.3 Command Line</a></p>
+<p class="contentsl3"><a href="#SUTxSWJVMTuning"               >7.3.4 Tunning</a></p>
+<p class="contentsl3"><a href="#SUTxSWJVMNotes"                >7.3.5 Notes</a></p>
+
+<p class="contentsl1"><a name="Dtoc_8" href="#sec_ScoreDetails" >8. Results Details</a></p>
+<p class="contentsl2"><a href="#max-jops"                       >8.1 max-jOPS</a></p>
+<p class="contentsl2"><a href="#critical-jops"                  >8.2 critical-jOPS</a></p>
+<p class="contentsl2"><a href="#CriticalTable"                  >8.3 Last Success jOPS/First Failure jOPS for SLA points Table</a></p>
+
+<p class="contentsl1"><a name="Dtoc_9" href="#sec_NumberOfProbes" >9. Number of probes</a></p>
+
+<p class="contentsl1"><a name="Dtoc_10" href="#sec_RequestMix" >10. Request Mix Accuracy</a></p>
+
+<p class="contentsl1"><a name="Dtoc_11" href="#sec_RateCriticalFailures" >11. Rate of non-critical failures</a></p>
+
+<p class="contentsl1"><a name="Dtoc_12" href="#sec_ResThr" >12. Delay between performance status pings</a></p>
+
+<p class="contentsl1"><a name="Dtoc_13" href="#sec_IRPRacc" >13. IR/PR accuracy</a></p>
+
+<p class="contentsl1"><a name="Dtoc_14" href="#sec_TimeServer" >14. Controller time offset from Time Server </a></p>
+
+<p class="contentsl1"><a name="Dtoc_15" href="#sec_RunProps"   >15. Run Properties </a></p>
+
+<p class="contentsl1"><a name="Dtoc_16" href="#sec_Validation" >16. Validation Details </a></p>
+<p class="contentsl2"><a href="#ValRep"                        >16.1 Validation Reports</a></p>
+<p class="contentsl3"><a href="#ValComTab"                     >16.1.1 Compliance</a></p>
+<p class="contentsl3"><a href="#ValCorTab"                     >16.1.2 Correctness</a></p>
+<p class="contentsl2"><a href="#ValOther"                      >16.2 OtherChecks</a></p>
+
+<hr />
+<h1><a name="sec_benchmark">1. SPECjbb2015 Benchmark</a></h1>
+<p> The SPECjbb2015 (Java Server Benchmark) is SPEC's benchmark for evaluating the performance of server side Java. Like its predecessors, SPECjbb2000/5, the SPECjbb2015 benchmark evaluates the performance of server side Java by emulating a three-tier client/server system (with emphasis on the middle tier). The benchmark exercises the implementations of the JVM (Java Virtual Machine), JIT (Just-In-Time) compiler, garbage collection, threads and some aspects of the operating system. It also measures the performance of CPUs, caches, memory hierarchy and the scalability of shared memory processors (SMPs). The benchmark also using an approach of reporting response time while gradually increasingly the load and reporting not only full system capacity throughput, but also throughput under response time constraint..</p>
+
+<p>
+The benchmark suite consists of three separate software modules:
+<ul type="circle ">
+<li>Controller (Ctr): directs the execution of the workload</li>
+<li>issue requests and services to Backend(s) as direted by the Controller; and measure end-to-end response time for issued requests </li>
+<li>Backend(s) (BE): contain business logic code that prcocesses requests and services from TxI,  and notifies the TxI that a request has been processed</li>
+</ul>
+These modules work together in real-time to collect server performance data by exercising the system under test (SUT) with a predefined workload.
+</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_main_file">2. Top Bar</a></h1>
+<p>The top bar shows the measured SPECjbb2015 benchmark result and gives some general information regarding this test run.
+</p>
+
+<h2><a name="Headline">2.1 Headline</a></h2>
+<p>The headline of the performance report includes one field displaying the hardware vendor
+and the name of the system under test.
+If this report is for a historical system the declaration "(Historical)" must be added to the model name. In a second field the max-jOPS and critical-jOPS is printed, eventually prefixed by an "Invalid" indicator, if the current result does not pass the validity checks implemented in the benchmark.
+</p>
+
+
+<h2><a name="Testsponsor">2.2 Test sponsor</a></h2>
+<p>The name of the organization or individual that sponsored the test.Generally, this is the name of the license holder.
+</p>
+
+<h2><a name="SPEClicense">2.3 SPEC license #</a></h2>
+<p>The SPEC license number of the organization or individual that ran the benchmark
+</p>
+
+<h2><a name="HardwareAvailability">2.4 Hardware Availability</a></h2>
+<p>The date when <strong>all</strong> the hardware necessary to run the
+result is generally available.
+For example, if the CPU is available in Aug-2007, but the memory is not available until Oct-2007, then the hardware availability date is Oct-2007 (unless some other component pushes it out farther).
+</p>
+
+<h2><a name="Testedby">2.5 Tested by</a></h2>
+<p>The name of the organization or individual that ran the test and submitted the result.
+</p>
+
+<h2><a name="TestLocation">2.6 Test Location</a></h2>
+<p>The name of the city, the state and country the test took place.  If there are installations in multiple geographic locations, that must also be listed in this field.
+</p>
+
+<h2><a name="SoftwareAvailability">2.7 Software Availability</a></h2>
+<p>The date when <strong>all</strong> the software necessary to run the
+result is generally available.
+For example, if the operating system is available in Aug-2007, but the JVM is not available until Oct-2007, then the software availability date is Oct-2007 (unless some other component pushes it out farther).
+</p>
+
+</p>
+<h2><a name="TestDate">2.8 Test Date</a></h2>
+<p>The date when the test is run.  This value is automatically supplied by the benchmark software; the time reported by the system under test is recorded in the raw result file .
+</p>
+
+<h2><a name="PublicationDate">2.9 Publication Date</a></h2>
+<p>The date when this report will be published after finishing the review. This date is automatically filled in with the correct value by the submission tool provided by SPEC.
+By default this field is set to &quot;Unpublished&quot; by the software generating the report.
+</p>
+
+<h2><a name="Invalid">2.10 INVALID or WARNING or COMMENTS</a></h2>
+<p>Any inconsistencies with the run and reporting rules causing a failure of one of the validity checks implemented in the report generation software will be reported here and all pages of the report file will be stamped with an "Invalid" water mark in case this happens. The printed text will show more details about which of the run rules wasn't met and the reason why. More detailed explanation may as well be at the end of report in sections &quot;Run Properties&quot; or &quot;Validation Details&quot;. If there are any special waivers or other comments from SPEC editor, those will also be listed here.
+</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_performance">3 Benchmark Results Summary</a></h1>
+<p>This section describes the result details as a graph (jOPS and Response time), the SPECjbb2015 benchmark category, number of groups and links to other sections of the report.
+</p>
+
+<h2><a name="category">3.1 Category </a></h2>
+<p>The header of this section decrypts as which the SPECjbb2015 benchmark category was run and how many &quot;number of groups&quot; were set to run using property &quot;specjbb.group.count&quot;:
+<ul type=Circle>
+<li>SPECjbb2015-Composite </li>
+<li>SPECjbb2015-MultiJVM</li>
+<li>SPECjbb2015-Distributed </li>
+</ul></p>
+
+<h2><a name="result_chart">3.2 Result Chart</a></h2>
+<p>The raw data from this graph can be found by clicking on the graph. This graph only shows the Response-Throughput (RT) phase of the benchmark. Initial phase of finding High Bound Injection Rate (HBIR) (Approximate High Bound of throughput) and later validation at the end of the run are not part of this graph. X-axis is showing jOPS (Injection Rate : IR) as system is being tested for gradually increasing RT step levels in increments of 1% of HBIR. Y-axis is showing response time (min, various percentiles, max) where 99th percentile determines the critical-jOPS metric being shown a yellow vertical line. The last successful RT step level before the &quot;First Failure&quot; of an RT step level is marked as red vertical line reflecting the max-jOPS metric of the benchmark. Benchmark continues to test few RT step levels beyond the &quot;First Failure&quot; RT step level. Often, there should be very few RT step levels passing beyond &quot;First Failure&quot; RT step level else it indicates that with more tuning system should be able to pass higher max-jOPS. A user need to view either controller.out or level-1 report output to view details about levels beyond &quot;First Failure&quot; RT step level.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_Sut">4. Overall SUT (System Under Test) Description</a></h1>
+<p>The following section of the report file gives the system under test (SUT) overview.</p>
+
+<h3><a name="SysVendor">4.1 Vendor</a></h3>
+<p>Company which sells the system.</p>
+
+<h3><a name="SysURL">4.2 System Vendor URL</a></h3>
+<p>URL of system vendor.</p>
+
+<h3><a name="SysSource">4.3 System Source</a></h3>
+<p>Single Supplier or Parts Built
+<ul type=Circle>
+<li>Single Supplier<br>
+&quot;Single Supplier&quot; is defined as a SUT configuration where all hardware is provided by a single supplier.</li>
+<li>Parts Built<br>
+&quot;Parts Built&quot; is defined as a SUT configuration where hardware is provided by multiple suppliers. A &quot;Parts Built&quot; system disclosure must include enough detail to procure and reproduce all aspects of the submission, including performance and power.</li></ul>
+
+<h3><a name="SysDesignation">4.4 System Designation</a></h3>
+<p>Possible values for this property are:
+<ul type=Circle>
+<li>Server Rack<br>
+&quot;Server&quot; is defined as a computer system that is marketed to support multiple tasks from multiple users, simultaneously.</li>
+<li>Personal System<br>
+&quot;Personal System&quot; is a computer system that is primarily marketed for use by a single individual, even though multiple tasks may execute simultaneously.</li></ul></p>
+
+<h3><a name="SysCount">4.5 Total System Count</a></h3>
+<p>The total number of configured systems.</p>
+
+<h3><a name="SysCountIdentical">4.6 All SUT Systems Identical</a></h3>
+<p>{YES / NO].</p>
+
+<h3><a name="SysNodesCount">4.7 Total Node Count</a></h3>
+<p>The total number of configured systems. Please refer to Run and Reporting Rules document for definition of system. As example, a rack based blade system, can be one system with many blade nodes with all running under single OS image or each running its own OS image.</p>
+
+<h3><a name="SysNodesCountIdentical">4.8 All Nodes Identical</a></h3>
+<p>{YES / NO].</p>
+
+<h3><a name="SysNodesPerSystem">4.9 Nodes Per System</a></h3>
+<p>The number of nodes configured on each system.</p>
+
+<h3><a name="SysTotalChips">4.10 Total Chips</a></h3>
+<p>The number of total chip installed on all system(s) in overall SUT(s).</p>
+
+<h3><a name="SysTotalCores">4.11 Total Cores </a></h3>
+<p>The number of total cores installed on all system(s) in overall SUT(s).</p>
+
+<h3><a name="SysTotalThreads">4.12 Total Threads</a></h3>
+<p>The number of total thread on all system(s) in overall SUT(s).</p>
+
+<h3><a name="SysTotalMemory">4.13 Total Memory (Gb)</a></h3>
+<p>The number of total memory installed on all system(s) in overall SUT(s).</p>
+
+<h3><a name="SysTotalOS">4.14 Total OS Images</a></h3>
+<p>The number of total OS images installed on all system(s) in overall SUT(s).</p>
+
+<h3><a name="SysSWEnvrionment">4.15 SW Environment</a></h3>
+<p>Environment mode. [virtual / Non-virtual]</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_Sys">5. SUT Description</a></h1>
+<p>The following section of the report file describes the hardware and the software of the system under test (SUT) used to run the reported benchmark with the level of detail required to reproduce this result.</p>
+
+<h2><a name="HW">5.1 Hardware</a></h2>
+<p>The following section of the report file describes the hardware and the software of the system under test (SUT) used to run the reported benchmark with the level of detail required to reproduce this result. Same fields are also valid for Driver system(s) HW and SW description. For driver system, some fields like memory etc. may not be needed in as details as for SUT.</p>
+
+<h3><a name="HWName">5.1.1 HW Name</a></h3>
+<p>HW Name.</p>
+
+<h3><a name="HWVendor">5.1.2 HW Vendor</a></h3>
+<p>The Company name which sells the system.</p>
+
+<h3><a name="HWURL">5.1.3 HW Vendor URL</a></h3>
+<p>The URL of the system vendor.</p>
+
+<h3><a name="HWAvail">5.1.4 HW Available </a></h3>
+<p>The HW availability (month-year) of the system.</p>
+
+<h3><a name="HWModel">5.1.5 Model</a></h3>
+<p>The model name identifying the system under test</p>
+
+<h3><a name="HWSysnumber">5.1.6 Number of Systems</a></h3>
+<p>The number of systems under test</p>
+
+<h3><a name="HWFormFactor">5.1.7 Form Factor</a></h3>
+<p>The form factor for this system.
+<br>In multi-node configurations, this is the form factor for a single node.  For rack-mounted systems, specify the number of rack units.  For blades, specify "Blade".  For other types of systems, specify "Tower" or "Other".</p>
+
+<h3><a name="HWNodesPerSystem">5.1.8 Nodes Per System</a></h3>
+<p>The number of nodes per system.</p>
+
+<h3><a name="HWCPUName">5.1.9 CPU Name</a></h3>
+<p>A manufacturer-determined processor formal name.</p>
+
+<h3><a name="HWCPUCharacteristics">5.1.10 CPU Characteristics</a></h3>
+<p>Technical characteristics to help identify the processor, such as number of cores, frequency, cache size etc.<br>
+If the CPU is capable of automatically running the processor core(s) faster than the nominal frequency and this feature is enabled, this field should also list the feature and the maximum frequency it enables on that CPU (e.g.:  &quot;Intel Turbo Boost Technology up to 3.46GHz&quot;).<br>
+If this CPU clock feature is present but is disabled, no additional information is required here.</p>
+
+<h3><a name="HWChipsPerSystem">5.1.11 Chips Per System </a></h3>
+<p>The numberof Chips Per System.</p>
+
+<h3><a name="HWCoresPerSystem">5.1.12 Cores Per System </a></h3>
+<p>The number of Cores Per System.</p>
+
+<h3><a name="HWCoresPerChip">5.1.13 Cores Per Chip </a></h3>
+<p>The number of Cores Per Chip.</p>
+
+<h3><a name="HWThreadsPerSystem">5.1.14 Threads Per System </a></h3>
+<p>The number of Threads Per System.</p>
+
+<h3><a name="HWThreadsPerCore">5.1.15 Threads Per Core </a></h3>
+<p>The number of Threads Per Core.</p>
+
+<h3><a name="HWVersion">5.1.16 HW Version </a></h3>
+<p>The HW version (if there is one), and the BIOS version.</p>
+
+<h3><a name="HWCPUFreq">5.1.17 CPU Frequency (MHz)</a></h3>
+<p>The nominal (marked) clock frequency of the CPU, expressed in megahertz.<br>If the CPU is capable of automatically running the processor core(s) faster than the nominal frequency and this feature is enabled, then the <a href="#HWCPUCharacteristics">CPU Characteristics</a> field must list additional information, at least the maximum frequency and the use of this feature.<br>Furthermore if the enabled/disabled status of this feature is changed from the default setting this must be documented in the <a href="#SUTxHWNotes">System Under Test Notes</a> field.</p>
+
+<h3><a name="HWL1Cache">5.1.18 Primary Cache</a></h3>
+<p>Description (size and organization) of the CPU's primary cache.  This cache is also referred to as "L1 cache".</p>
+
+<h3><a name="HWL2Cache">5.1.19 Secondary Cache</a></h3>
+<p>Description (size and organization) of the CPU's secondary cache.  This cache is also referred to as "L2 cache".</p>
+
+<h3><a name="HWL3Cache">5.1.20 Tertiary Cache</a></h3>
+<p>Description (size and organization) of the CPU's tertiary, or "L3 cache".</p>
+
+<h3><a name="HWOtherCache">5.1.21 Other Cache</a></h3>
+<p>Description (size and organization) of any other levels of cache memory.<p>
+
+<h3><a name="HWDiskDrive">5.1.22 Disk Drive</a></h3>
+<p>A description of the disk drive(s) (count, model, size, type, rotational speed and RAID level if any) used to boot the operating system and to hold the benchmark software and data during the run.</p>
+
+<h3><a name="HWFileSystem">5.1.23 File System </a></h3>
+<p>The file system used.</p>
+
+<h3><a name="HWMemSize">5.1.24 Memory Amount (GB)</a></h3>
+<p>Total size of memory in the SUT in GB.</p>
+
+<h3><a name="HWMemModules">5.1.25 # and size of DIMM(s)</a></h3>
+<p>Number and size of memory modules used for testing.</p>
+
+<h3><a name="HWMemDetails">5.1.26 Memory Details</a></h3>
+<p>Detailed description of the system main memory technology, sufficient for identifying the memory used in this test.
+<br>
+Potentially there can be multiple instances of this field if different types of DIMMs have been used for this test, one separate field for each DIMM type.
+<br>
+Since the introduction of DDR4 memory there are two slightly different formats.
+<br>
+The recommended formats are described here.
+<br>
+<br>
+<b>
+DDR4 Format:
+<br>
+N x gg ss pheRxff PC4v-wwwwaa-m
+</b>
+<br>
+<br>
+References:
+<ul type=Circle>
+<li>
+&quot;JEDEC Standard No. 21C&quot;  <a href="http://www.jedec.org/standards-documents/docs/module4_20_26">http://www.jedec.org/standards-documents/docs/module4_20_26</a>
+<li>
+DDR4 SDRAM <a href="http://www.jedec.org/standards-documents/docs/jesd79-4">http://www.jedec.org/standards-documents/docs/jesd79-4</a>
+</ul>
+
+Example:
+<br>
+8 x 16 GB 2Rx4 PC4-2133P-R
+<br>
+<br>
+
+Where:
+<ul type=Circle>
+<li>
+<b>N</b> = number of DIMMs used
+<br>
+x denotes the multiplication specifier
+</li>
+<br>
+<br>
+
+<li>
+<b>gg ss</b> = size of each DIMM, including unit specifier
+<br>
+256 MB, 512 MB, 1 GB, 2 GB, 4 GB, 8 GB etc.
+</li>
+<br>
+<br>
+
+<li>
+<b>pheR</b> = p=number ranks; he=encoding for certain packaging, often blank
+<br>
+1R = 1 rank of DDR SDRAM installed
+<br>
+2R = 2 ranks
+<br>
+4R = 4 ranks
+</li>
+<br>
+<br>
+
+<li>
+<b>xff</b> = Device organization (bit width) of DDR SDRAMs used on this assembly
+<br>
+x4 = x4 organization (4 DQ lines per SDRAM)
+<br>
+x8 = x8 organization
+<br>
+x16 = x16 organization
+</li>
+<br>
+<br>
+
+<li>
+<b>PCy</b> = Memory module technology standard
+<br>
+PC4 = DDR4 SDRAM
+</li>
+<br>
+<br>
+
+<li>
+<b>v</b> = Module component supply voltage values: e.g. &lt;blank&gt; for 1.2V, L for Low Voltage (currently not defined)
+</li>
+<br>
+<br>
+
+<li>
+<b>wwww</b> = module speed in Mb/s/data pin: e.g. 1866, 2133, 2400
+</li>
+<br>
+<br>
+
+<li>
+<b>aa</b> = speed grade, e.g.
+<br>
+J = 10-10-10
+<br>
+K = 11-11-11
+<br>
+L = 12-12-12
+<br>
+M = 13-13-13
+<br>
+N = 14-14-14
+<br>
+P = 15-15-15
+<br>
+R = 16-16-16
+<br>
+U = 18-18-18
+</li>
+<br>
+<br>
+
+<li>
+<b>m</b> = Module Type
+<br>
+E = Unbuffered DIMM (&quot;UDIMM&quot;), with ECC (x72 bit module data bus)
+<br>
+L = Load Reduced DIMM (&quot;LRDIMM&quot;)
+<br>
+R = Registered DIMM (&quot;RDIMM&quot;)
+<br>
+S = Small Outline DIMM (&quot;SO-DIMM&quot;)
+<br>
+U = Unbuffered DIMM (&quot;UDIMM&quot;), no ECC (x64 bit module data bus)
+<br>
+T = Unbuffered 72-bit small outline DIMM (&quot;72b-SO-DIMM&quot;)
+</li>
+</ul>
+
+Notes:
+<br>
+<ul type=Circle>
+<li>
+The main string &quot;<tt>gg ss pheRxff PC4v-wwwwaa-m</tt>&quot; can be read directly from the label on the memory module itself for all vendors who use JEDEC standard labels.
+</li>
+</ul>
+
+
+<br>
+<b>
+DDR3 Format:
+<br>
+N x gg ss eRxff PChv-wwwwwm-aa, ECC CLa; slots k, ... l populated
+</b>
+<br>
+<br>
+Reference:
+<ul type=Circle>
+<li>
+&quot;DDR3 DIMM Label&quot;, PRN09-NM4, October 2009 <a href="http://www.jedec.org/standards-documents/docs/pr-n09-nm1">http://www.jedec.org/standards-documents/docs/pr-n09-nm1</a>
+</ul>
+
+Example:
+<br>
+8 x 8 GB 2Rx4 PC3L-12800R-11, ECC CL10; slots 1 - 8 populated
+<br>
+<br>
+Where:
+<ul type=Circle>
+
+<li>
+<b>N</b> = number of DIMMs used
+<br>
+x denotes the multiplication specifier
+</li>
+<br>
+<br>
+
+<li>
+<b>gg ss</b> = size of each DIMM, including unit specifier
+<br>
+256 MB, 512 MB, 1 GB, 2 GB, 4 GB, 8 GB etc.
+</li>
+<br>
+<br>
+
+<li>
+<b>eR</b> = Number of ranks of memory installed
+<br>
+1R = 1 rank of DDR SDRAM installed
+<br>
+2R = 2 ranks
+<br>
+4R = 4 ranks
+</li>
+<br>
+<br>
+
+<li>
+<b>xff</b> = Device organization (bit width) of DDR SDRAMs used on this assembly
+<br>
+x4 = x4 organization (4 DQ lines per SDRAM)
+<br>
+x8 = x8 organization
+<br>
+x16 = x16 organization
+</li>
+<br>
+<br>
+
+<li>
+<b>PCy</b> = Memory module technology standard
+<br>
+PC2 = DDR2 SDRAM
+<br>
+PC3 = DDR3 SDRAM
+</li>
+<br>
+<br>
+
+<li>
+<b>v</b> = Module component supply voltage values: e.g. &lt;blank&gt; for 1.5V, L for 1.35V
+</li>
+<br>
+<br>
+
+<li>
+<b>wwwww</b> = Module bandwidth in MB/s
+<br>
+8500 = 8.53 GB/s (corresponds to 1066 MHz)
+<br>
+10600 = 10.66 GB/s (corresponds to 1333 MHz)
+<br>
+12800 = 12.80 GB/s (corresponds to 1600 MHz)
+<br>
+14900 = 14.90 GB/s (corresponds to 1866 MHz)
+</li>
+<br>
+<br>
+
+<li>
+<b>m</b> = Module Type
+<br>
+E = Unbuffered DIMM (&quot;UDIMM&quot;), with ECC (x72 bit module data bus)
+<br>
+F = Fully Buffered DIMM (&quot;FB-DIMM&quot;)
+<br>
+M = Micro-DIMM
+<br>
+N = Mini-Registered DIMM (&quot;Mini-RDIMM&quot;), no address/command parity function
+<br>
+P = Registered DIMM (&quot;RDIMM&quot;), with address/command parity function
+<br>
+R = Registered DIMM, no address/command parity function
+<br>
+S = Small Outline DIMM (&quot;SO-DIMM&quot;)
+<br>
+U = Unbuffered DIMM (&quot;UDIMM&quot;), no ECC (x64 bit module data bus)
+</li>
+<br>
+<br>
+
+<li>
+<b>aa</b> = DDR SDRAM CAS Latency in clocks at maximum operating frequency
+</li>
+<br>
+<br>
+
+<li>
+<b>ECC</b> = Additional specification for modules which have ECC (Error Correction Code) capabilities
+</li>
+<br>
+<br>
+
+<li>
+<b>CLa</b> = CAS latency if the tester has changed the latency to something other than the default
+</li>
+<br>
+<br>
+
+<h3><a name="HWNICs_Installed">5.1.27 # and type of Network Interface Cards (NICs) Installed</a></h3>
+<p>A description of the network controller(s) (number, manufacturer, type, ports and speed) installed on the SUT</p>
+
+<h3><a name="HWPSUCount">5.1.28 Power Supply Quantity and Rating (W)</a></h3>
+<p>The number of power supplies that are installed in this node and the power rating for each power supply. Both entries should show &quot;None&quot; if the node is powered by a shared power supply.</p>
+
+<h3><a name="HWOtherHardware">5.1.29 Other Hardware</a></h3>
+<p>Any additional equipment added to improve performance and required to achieve the reported scores.</p>
+
+<h3><a name="HWSharedEnclosure">5.1.30 Cabinet/Housing/Enclosure</a></h3>
+<p>The model name identifying the enclosure housing the tested nodes.</p>
+
+<h3><a name="HWSharedDescription">5.1.31 Shared Description</a></h3>
+<p>Additional descriptions about the shared HW.</p>
+
+<h3><a name="HWSharedComment">5.1.32 Shared Comment</a></h3>
+<p>Description of additional performance relevant components not covered in the fields above </p>
+
+<h3><a name="HWSharedNotes">5.1.33 Notes</a></h3>
+<p>Additional Notes. <br>
+<ul>
+<li><u>It is required</u> to report whether certain security vulnerabilities have been mitigated in the SUT (HW and/or OS). As of this writing, the disclosure takes the bulleted form below (choosing either "Yes" or " No" in response to the statement that follows it). See the <a href="https://spec.org/jbb2015/docs/SPECjbb2015-Result_File_Fields.html">public version of this document</a> for updates.</li><br>
+   <ul>
+   <li>[Yes/No]: The test sponsor attests, as of date of publication, that CVE-2017-5754 (Meltdown) is mitigated in the system as tested and documented.</li>
+   <li>[Yes/No]: The test sponsor attests, as of date of publication, that CVE-2017-5753 (Spectre variant 1) is mitigated in the system as tested and documented.</li>
+   <li>[Yes/No]: The test sponsor attests, as of date of publication, that CVE-2017-5715 (Spectre variant 2) is mitigated in the system as tested and documented.
+   </ul>
+<br>
+<li>Include a brief description for who supports this component. A link that shows the component has support is recommended.</li>
+</ul>
+</p>
+
+<!--  ================================================================================================== -->
+<h2><a name="OtherHWSW">5.2. Other Hardware/Software</a></h2>
+<p>Other HW like network switch(s) or other software.</p>
+
+<h3><a name="OtherHWSWName">5.2.1 Name</a></h3>
+<p>Other Hardware/Software Name.</p>
+
+<h3><a name="OtherHWSWVendor">5.2.2 Vendor</a></h3>
+<p>The company name which sells item under Other Hardware/Software.</p>
+
+<h3><a name="OtherHWSWVendorURL">5.2.3 Vendor URL</a></h3>
+<p>The company URL which sells item under Other Hardware/Software.</p>
+
+<h3><a name="OtherHWSWVersion">5.2.4 Version </a></h3>
+<p>Other Hardware/Software Version.</p>
+
+<h3><a name="OtherHWSWAvail">5.2.5 Availablity </a></h3>
+<p>The HW/SW availability (month-year).</p>
+
+<h3><a name="OtherHWSWBits">5.2.6 Bitness</a></h3>
+<p>If applicable Other HW or SW Bitness else type 'n/a'.</p>
+
+<h3><a name="OtherHWSWNotes">5.2.7 Notes</a></h3>
+<p>Additional Notes. <br> 
+<ul>
+<li>Include a brief description for who supports this component. A link that shows the component has support is recommended.</li>
+</ul>
+</p>
+
+<!--  ================================================================================================== -->
+<h2><a name="SWOS">5.3 Operating System</a></h2>
+<p>System OS Section</p>
+
+<h3><a name="SWOSName">5.3.1 OS Name</a></h3>
+<p>OS name.</p>
+
+<h3><a name="SWOSVendor">5.3.2 OS Vendor</a></h3>
+<p>The OS vendor name.</p>
+
+<h3><a name="SWOSVendorURL">5.3.3 OS Vendor URL</a></h3>
+<p>The OS vendor URL.</p>
+
+<h3><a name="SWOSVersion">5.3.4 OS Version</a></h3>
+<p>OS version.</p>
+
+<h3><a name="SWOSAvail">5.3.5 OS Available</a></h3>
+<p>The OS availability (month-year).</p>
+
+<h3><a name="SWOSBits">5.3.6 OS Bitness</a></h3>
+<p>OS Bitness.</p>
+
+<h3><a name="SWOSNotes">5.3.7 OS Notes</a></h3>
+<p>Additional OS Notes. <br>
+<ul>
+<li>Include a brief description for who supports this component. A link that shows the component has support is recommended.</li>
+</ul>
+</p>
+<p>Note that OS tuning info is placed under the separate configuration section described here <a href="#SUTxSWTune">7.2.3</a></p>
+
+<!--  ================================================================================================== -->
+
+<h2><a name="SWJVM">5.4 JVM</a></h2>
+<p>JVM Section</p>
+
+<h3><a name="SWJVMName">5.4.1 JVM Name</a></h3>
+<p>JVM name.</p>
+
+<h3><a name="SWJVMVendor">5.4.2 JVM Vendor</a></h3>
+<p>The JVM vendor name.</p>
+
+<h3><a name="SWJVMVendorURL">5.4.3 JVM Vendor URL</a></h3>
+<p>The JVM vendor URL.</p>
+
+<h3><a name="SWJVMVersion">5.4.4 JVM Version</a></h3>
+<p>Version of the JVM.</p>
+
+<h3><a name="SWJVMAvail">5.4.5 JVM Available</a></h3>
+<p>The JVM availability (month-year).</p>
+
+<h3><a name="SWJVMBits">5.4.6 Bitness</a></h3>
+<p>JVM Bitness.</p>
+
+<h3><a name="SWJVMNotes">5.4.7 JVM Notes</a></h3>
+<p>Additional JVM Notes. <br>
+<ul>
+<li>Include a brief description for who supports this component.
+<ul>
+<li>If you are using a community supported Java, <u>it is required</u> that you provide a link(s) to page(s) from which the committee can determine whether the community product meets the <b>General Availability</b> and <b>Support</b> requirements. The requirements for community supported products are outlined in <a href="https://www.spec.org/osg/policy.html#AppendixC">Appendix C. Guidelines for General Availability</a></li>
+<li>See the <a href="https://spec.org/jbb2015/docs/faq.html">SPECjbb2015 FAQ</a> for examples of links for common community supported Java.</li>
+</ul>
+</ul>
+</p>
+<p>Note that JVM tuning info is placed under the separate configuration section described here <a href="#SUTxSWJVMTuning">7.3.4</a></p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_Topology">6. Topology </a></h1>
+<p>This section covers the topology for SUT and driver system (Distributed category only). First section shows an easy summary of the deployment of JVM and OS images across H/W systems.
+Later sub-sections detail about JVM instances across OS images deployed for each H/W configuration for SUT and driver system (Distributed category only).
+</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_SUTx">7. SUT or Driver configuration</a></h1>
+<p>This section covers as how JVM instances are deployed inside OS images and those OS images are deployed across HW systems.</p>
+
+<h2><a name="SUTxHardware">7.1 Hardware</a></h2>
+<p>On a given system HW configuration describes OS images being deployed.</p>
+
+<h3><a name="SUTxHWOS">7.1.1 OS Images</a></h3>
+<p>Format is OS_image_type (number of them deployed on this system). OS_image_type should match one of the OS configuration described in this section 13.2 .</p>
+
+<h3><a name="SUTxHWDesc">7.1.2 Hardware Description</a></h3>
+<p>Name of the HW when describing in product section like 'hw_1'.</p>
+
+<h3><a name="SUTxHWSysNum">7.1.3 Number of Systems</a></h3>
+<p>Number of systems using same exact deployment.</p>
+
+<h3><a name="SUTxHWSWEnviro">7.1.4 SW Environment</a></h3>
+<p>Virtual or non-virtual.</p>
+
+<h3><a name="SUTxHWTuning">7.1.5 Tuning</a></h3>
+<p>Any tuning.</p>
+
+<h3><a name="SUTxHWNotes">7.1.6 Notes</a></h3>
+<p>Any notes.</p>
+
+<h2><a name="SUTxSWOSI">7.2 OS image </a></h2>
+<p>On a given OS image describes JVM instances being deployed.</p>
+
+<h3><a name="SUTxSWJVM">7.2.1 JVM Instances</a></h3>
+<p>Format is list of many JVM instances following: JVM_image_type (number of them deployed in this OS image). JVM_image_type should match one of the JVM Instance configuration described in this section 13.3 .</p>
+
+<h3><a name="SUTxSWOS">7.2.2 OS Image Description </a></h3>
+<p>Name of the OS product when describing in product section like 'os_1'.</p>
+
+<h3><a name="SUTxSWTune">7.2.3 Tuning </a></h3>
+<p>Any tuning.</p>
+
+<h3><a name="SUTxSWNote">7.2.4 Notes </a></h3>
+<p>Any Notes.</p>
+
+<h2><a name="SUTxSWJVMI">7.3 JVM Instance</a></h2>
+<p>Describes a JVM Instance.</p>
+
+<h3><a name="SUTxSWJVMParts">7.3.1 Parts of Benchmark </a></h3>
+<p>Name of benchmark agent this JVM instance will run. It can be Composite (for Composite category) or for MulitJVM and Distributed category it can be Controller or TxInjector or Backend.</p>
+
+<h3><a name="SUTxSWJVMDe">7.3.2 JVM Instance Description</a></h3>
+<p>Name of the JVM product when describing in product section like 'jvm_1'.</p>
+
+<h3><a name="SUTxSWJVMCLI">7.3.3 Command Line </a></h3>
+<p>Command line parameters being used to launch this JVM instance.</p>
+
+<h3><a name="SUTxSWJVMTuning">7.3.4 Tunning </a></h3>
+<p>Any tuning.</p>
+
+<h3><a name="SUTxSWJVMNotes">7.3.5 Notes </a></h3>
+<p>Any notes.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_ScoreDetails">8. Results Details</a></h1>
+<p>Details about max-jOPS and critical-jOPS calculations.</p>
+
+<h2><a name="max-jops">8.1 max-jOPS</a></h2>
+<p>Showing last few RT(Response-Throughput) step levels close to max-jOPS. Pass means that RT step level passed and fail means system did not pass that RT step level. Successful RT step level before first failed RT step level is chosen as max-jOPS. .</p>
+
+<h2><a name="critical-jops">8.2 critical-jOPS</a></h2>
+<p>This is a complex calculation. jOPS at various SLAs (Service Level Agreement) are calculated using data shown in the table called &quot;Last Success jOPS/First Failure jOPS for SLA points&quot; as well as other RT step levels in between those two levels. Then geometric mean of jOPS at these SLAs represent the critical-jOPS metric. This metric could be 0 if jOPS for any one or more of the five SLAs (10ms, 25ms, 50ms, 75ms, 100ms) with details later in the report is 0.</p>
+
+<h2><a name="CriticalTable">8.3 Last Success jOPS/First Failure jOPS for SLA points</a></h2>
+<p>First column list various SLAs points (different response time thresholds) while first title row is listing response time percentiles. The data for a given SLAs (as example 10000 us = 10ms) and percentile (as example 99th percentile) has two data values in format [Last Success jOPS/First Failure jOPS]. Last Success jOPS is the last successful RT step level whose 99th percentile of response time of all samples was 10ms or less. If 99th percentile of response time was never 10ms or below, data will be &#39;-&#39;. First Failure jOPS is the RT step level where first time 99th percentile of response time of all samples was more than 10ms. Data points with red color background are being used in calculation for the metric critical-jOPS.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_NumberOfProbes">9. Number of probes</a></h1>
+<p>This is one of the validation criteria. This graph only shows RT phase step levels. jOPS for RT step levels are on x-axis and number of probes as % of total jOPS is on y-axis (logarithmic scale). Two horizontal lines are showing limits. To have good confidence in response time, we need to ensure that a good % of total jOPS is being issued as probes. For more details, please refer to validation section of Run and Reporting Rules document.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_RequestMix">10. Request Mix Accuracy</a></h1>
+<p>This is one of the validation criteria. Total requests are issued to maintain a request mix. This graph only shows RT phase step levels.  jOPS for RT step levels are on x-axis and y-axis shows the (Actual % in the mix - Expected % in the mix). For more details about passing criteria, please refer to validation section of Run and Reporting Rules document.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_RateCriticalFailures">11. Rate of non-critical failures</a></h1>
+<p>This is one of the validation criteria. If these non-critical failures are 0 during the RT phase, only a message is printed. If non-critical failures during RT phase are >0, then a graph is shown. In case of graph, jOPS for RT step levels are on x-axis and number of non-critical failures for each RT step level is on y-axis. Transaction Injectors (TxI) issue requests to Backend(s) to process. Many time for various reasons, TxI will timeout after waiting for a threshold. This is counted as non-critical failure. For more details about passing criteria, please refer to validation section of Run and Reporting Rules document.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_ResThr">12. Delay between performance status pings</a></h1>
+<p>This is one of the validation criteria. X-axis is time in milliseconds (msec). Y-axis is showing delay time in msec. Validation criteria applies to whole RT phase and not to individual RT step levels. Also, minimum y-axis value is 5 sec as that is passing criteria and chosen to reduce the size of .raw file for submission. If a user want to see y-axis data starting with 0, user need to generate report with level-1 and it will have the detailed graph. For more details about passing criteria, please refer to validation section of Run and Reporting Rules document.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_IRPRacc">13. IR/PR accuracy</a></h1>
+<p>This graph shows the relationship between IR (Injection rate), aIR(Actual Injection Rate) and Actual PR(Processed Rate). The graph is showing all the phase starting from HBIR(High Bound Injection Rate) search, RT phase warm-up, RT phase and validation phase at the end. X-axis is showing iteration number where iteration means a time period for which IR/aIR/PR being evaluated. IR is target Injection rate, actual IR is the IR we could issue for a given iteration and PR is total processed rate for that iteration. To pass an iteration, IR/aIR/PR must be within certain % of each other. Y-axis shows as how far Actual IR and Actual PR are compared to IR as base. If those are within low and high bound, that iteration passed else it failed. A user will see many failures during HBIR search. During RT phase till max-jOPS is found, there could be some failures as certain number of retries are allowed.  For more details about passing criteria, please refer to Run and Reporting Rules document.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_TimeServer">14. Controller time offset from Time Server </a></h1>
+<p>This is one of the validation criteria which applies for Composite and MultiJVM runs on virtualized systems. It validates Controller time correctness and consistency agains Time Server running on the native host. X-axis is time in milliseconds (msec). Y-axis is showing Mean offset from Time Server (calculated during Response Time curve) minus  specific offset time at this point in msec. Validation criteria applies to RT phase. There are three time offset validation metrics: not be more than 10 points where |Mean-offset| > 50 msec; no points where |Mean-offset| > 500 msec; offset STDDEV during RT must not be > 100 msec.
+</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_RunProps">15. Run Properties</a></h1>
+<p>This section covers the run properties which are being set by the user.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<h1><a name="sec_Validation">16. Validation Details</a></h1>
+<p>Details about validation are listed here.</p>
+
+<h2><a name="ValRep">16.1 Validation Reports</a></h2>
+<p>Provides details about different type of validation.</p>
+
+<h3><a name="ValComTab">16.1.1 Compliance</a></h2>
+<p>The SPECjbb2015 benchmark Run and Reporting Rules document list specifically the properties which can be set by the user. If user settable properties are set within compliant settable range, this section prints the message &quot;PASSED&quot; for all agents.<br />
+If a user sets either non-settable property to different than default and/or sets user settable properties to out of compliant range, this property is listed here as well as agent along with message that run is INVALID.
+</p>
+
+<h3><a name="ValCorTab">16.1.2 Correctness</a></h2>
+<p>Benchmark also has data structures which must be in synchronization and should match certain criteria. If this criteria fails, run is declared INVALID.
+</p>
+
+<h2><a name="ValOther">16.2 OtherChecks</a></h2>
+<p>List other checks for compliance as well as High Bound maximum and High Bound settled values during the HBIR (High Bound Injection Rate) search phase.</p>
+
+<!--  ================================================================================================== -->
+
+<hr />
+<p>
+Product and service names mentioned herein may be the trademarks of their respective owners.<br />
+Copyright 2007-2019 Standard Performance Evaluation Corporation (SPEC). <br />
+All Rights Reserved.</p>
+
+</body>
+</html>
