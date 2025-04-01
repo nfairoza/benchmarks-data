@@ -1,0 +1,16 @@
+time=2025-03-27T20:45:00.314Z level=INFO msg="Starting up" app=perfspect version=3.4.0_2025-03-03_bf010209 PID=934313 arguments="./binaries/perfspect/perfspect telemetry --all --format json --duration 0 --output /tmp/mlc-perfspect"
+time=2025-03-27T20:45:00.314Z level=INFO msg="Starting up" app=perfspect version=3.4.0_2025-03-03_bf010209 PID=934312 arguments="./binaries/perfspect/perfspect metrics --format csv --output /tmp/mlc-perfspect"
+time=2025-03-27T20:45:00.329Z level=WARN msg="can not prompt for sudo password because STDIN isn't coming from a terminal"
+time=2025-03-27T20:45:00.329Z level=WARN msg="continuing without elevated privileges"
+time=2025-03-27T20:45:00.329Z level=WARN msg="can not prompt for sudo password because STDIN isn't coming from a terminal"
+time=2025-03-27T20:45:00.330Z level=ERROR msg="no targets specified"
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script=mpstat
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script="instruction mix"
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script=iostat
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script=sar-network
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script=sar-memory
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script=turbostat
+time=2025-03-27T20:45:00.430Z level=INFO msg="skipping script because it requires superuser privileges and the user cannot elevate privileges on target" script="gaudi stats"
+time=2025-03-27T20:45:00.431Z level=ERROR msg="failed to write report file: open /tmp/mlc-perfspect/dbx-gumby01_telem.raw: permission denied"
+time=2025-03-27T20:45:00.431Z level=ERROR msg="failed to write report: failed to write report file: open /tmp/mlc-perfspect/dbx-gumby01_telem.raw: permission denied"
+time=2025-03-27T20:45:00.431Z level=ERROR msg="failed to write report: failed to write report file: open /tmp/mlc-perfspect/dbx-gumby01_telem.raw: permission denied"

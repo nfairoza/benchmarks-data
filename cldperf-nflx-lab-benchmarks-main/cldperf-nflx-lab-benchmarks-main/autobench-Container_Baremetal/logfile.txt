@@ -1,0 +1,53 @@
+Intel(R) Memory Latency Checker - v3.11b
+Measuring idle latencies for random access (in ns)...
+		Numa node
+Numa node	     0	
+       0	 111.5	
+
+Measuring Peak Injection Memory Bandwidths for the system
+Bandwidths are in MB/sec (1 MB/sec = 1,000,000 Bytes/sec)
+Using all the threads from each core if Hyper-threading is enabled
+Using traffic with the following read-write ratios
+ALL Reads        :	260585.0	
+3:1 Reads-Writes :	247551.9	
+2:1 Reads-Writes :	242716.6	
+1:1 Reads-Writes :	234532.0	
+Stream-triad like:	241718.4	
+
+Measuring Memory Bandwidths between nodes within system 
+Bandwidths are in MB/sec (1 MB/sec = 1,000,000 Bytes/sec)
+Using all the threads from each core if Hyper-threading is enabled
+Using Read-only traffic type
+		Numa node
+Numa node	     0	
+       0	260536.2	
+
+Measuring Loaded Latencies for the system
+Using all the threads from each core if Hyper-threading is enabled
+Using Read-only traffic type
+Inject	Latency	Bandwidth
+Delay	(ns)	MB/sec
+==========================
+ 00000	1203.83	 260502.6
+ 00002	1218.61	 260450.7
+ 00008	1214.40	 260287.9
+ 00015	1204.10	 260133.9
+ 00050	1199.69	 259887.6
+ 00100	1183.86	 259833.4
+ 00200	1138.46	 256216.4
+ 00300	178.02	 201201.0
+ 00400	164.98	 150973.7
+ 00500	160.35	 123377.9
+ 00700	153.47	  90300.8
+ 01000	150.15	  64579.7
+ 01300	147.71	  50263.6
+ 01700	145.67	  38842.3
+ 02500	139.97	  26765.9
+ 03500	139.08	  19344.1
+ 05000	138.61	  13722.6
+ 09000	138.58	   7857.1
+ 20000	138.32	   3799.3
+
+Measuring cache-to-cache transfer latency (in ns)...
+Local Socket L2->L2 HIT  latency	25.3
+Local Socket L2->L2 HITM latency	25.4

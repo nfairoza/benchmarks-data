@@ -1,0 +1,9 @@
+FROM dockerregistry.test.netflix.net:7002/baseos/bionic:release
+RUN apt-get update
+RUN apt-get install -y build-essential
+# --VMF requires a different verion of ffmpeg
+RUN apt-get install -y et-ffmpeg-dev
+RUN apt-get update && apt-get install -y schedtool wget
+WORKDIR /home
+COPY ./vmf_home/ /home/
+CMD ["bash"]
