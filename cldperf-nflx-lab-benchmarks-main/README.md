@@ -11,7 +11,7 @@ All benchmark specific files and setup are located in autobench folder
 - **upload-results.sh**: Script to upload results to S3
 - **benchmarks/**: Directory containing individual benchmark scripts
 - **binaries/**: Directory containing profiling tools
-
+---
 
 # 🏃 Running Benchmarks on the on AWS Cloud EC2 instances
 The `autobench-aws` directory contains a comprehensive benchmarking framework designed to evaluate performance across various AWS EC2 instance types. This framework extends the lab benchmarking capabilities to cloud environments.
@@ -70,7 +70,7 @@ The framework includes a script to upload benchmark results to an S3 bucket:
 ```bash
 ./upload-results.sh
 ```
-
+---
 # 🏃 Running Benchmarks on the on prem Host (Without Containers)
 
 To execute benchmarks directly on the host machine, use the following script:
@@ -86,7 +86,7 @@ Among benchmark results (CSV), folder will also contain benchmark evnironment se
 **Example:**
 - Genoa-metal-48xl-jammy-680-52-generic-OpenJDK17-G1GC-128g-03-11-2025_1741723630
 - Genoa-metal-48xl-LATEST *(LATEST always contains the most recent run.)*
-
+---
 # Running Benchmarks in Docker Containers in the on-prem Host 🐳  
 
 ## Building the Benchmark Docker Image  
@@ -133,7 +133,7 @@ If you run **one** container, results are stored in **$RESULT** directory in sim
 - Genoa-metal-48xl-jammy-680-52-generic-OpenJDK17-G1GC-128g-03-11-2025_1741723630  
 - Genoa-metal-LATEST
 
----
+
 
 ### 2️⃣ Running Multiple Containers Concurrently  
 
