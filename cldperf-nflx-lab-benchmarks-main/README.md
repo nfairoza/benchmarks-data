@@ -1,4 +1,4 @@
-This repository provides tools and scripts for running benchmarks on [Netflix Lab machines](https://netflix.atlassian.net/wiki/spaces/OCPERFLAB/overview?homepageId=1937706945) either **inside Docker containers** or **directly on the host machine**. Follow the instructions below to set up and execute benchmarks efficiently.
+This repository provides tools and scripts for running benchmarks on [ Lab machines](https://netflix.atlassian.net/wiki/spaces/OCPERFLAB/overview?homepageId=1937706945) either **inside Docker containers** or **directly on the host machine**. Follow the instructions below to set up and execute benchmarks efficiently.
 
 ---
 
@@ -36,7 +36,7 @@ $ docker build -t benchmark-container .
 
 ## Launching Containers for Benchmarking 🚀  
 
-Container launch script support container shapes that mimic popular AWS instance types in terms of vcpu and memory configured. Supported shapes are:: 
+Container launch script support container shapes that mimic popular AWS instance types in terms of vcpu and memory configured. Supported shapes are::
 - **xlarge, 2xlarge, 4xlarge, 8xlarge, 12xlarge, 16xlarge, 24xlarge, 32xlarge, metal-48xl**
 
 
@@ -45,20 +45,20 @@ Container launch script support container shapes that mimic popular AWS instance
 $ ./launch_containers-concurrent.sh xlarge 2xlarge 4xlarge  
 
 This command launches **three containers** with different shapes
-- xlarge, 2xlarge, 4xlarge 
+- xlarge, 2xlarge, 4xlarge
 
 You can also run multiple containers of the same shapes by specifying the count in the format below
 $ ./launch_containers-concurrent.sh 10.xlarge 8.2xlarge 8xlarge
 
 This command launches **10 xlarge, 8 2xlarge and 1 8xlarge containers** with different shapes
-- xlarge, 2xlarge, 8xlarge 
+- xlarge, 2xlarge, 8xlarge
 
 
 ## 📂 Directory Structure for Benchmark Results  
 
 ### 1️⃣ Running a Single Container  
 
-$ ./launch_containers-concurrent.sh 8xlarge 
+$ ./launch_containers-concurrent.sh 8xlarge
 
 If you run **one** container, results are stored in **$RESULT** directory in similar format as running without container
 
