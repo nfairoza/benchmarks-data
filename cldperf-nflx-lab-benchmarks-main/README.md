@@ -48,7 +48,7 @@ Where `[option]` is one of:
 - `uProf`: Run benchmarks with AMD uProf profiling
 - `auto`: Run all benchmarks automatically with PerfSpec profiling
 
-## Results in AWS Environment
+### Results in AWS Ec2
 
 Benchmark results are stored in the following locations:
 
