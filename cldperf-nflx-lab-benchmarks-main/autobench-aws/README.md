@@ -14,6 +14,8 @@ The benchmarking framework allows for running a variety of standard performance 
 2. Run the setup script:
 
 ```bash
+wget https://raw.githubusercontent.com/nfairoza/benchmarks-data/refs/heads/main/cldperf-nflx-lab-benchmarks-main/autobench-aws/startup.sh
+sudo chmod +x startup.sh
 ./startup.sh
 ```
 
