@@ -157,5 +157,7 @@ sudo chmod -R +x "$AUTOBENCH_DIR/binaries" 2>/dev/null || true
 
 cd $AUTOBENCH_DIR
 echo "Setup complete! You can now run benchmarks."
-echo "To run benchmarks, execute: sudo start-benchmarks.sh"
+
 echo "................................Initial binaries and scripts setup complete.............................."
+echo "To run benchmarks, execute: sudo start-benchmarks.sh"
+echo "................................Now you can run benchamrks.............................."
