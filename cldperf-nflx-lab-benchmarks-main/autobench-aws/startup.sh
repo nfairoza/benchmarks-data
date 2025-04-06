@@ -134,16 +134,14 @@ else
         echo "Found autobench directory at $AUTOBENCH_DIR"
         echo "Copying files from GitHub to $AUTOBENCH_DIR..."
         sudo cp -f "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/" 2>/dev/null || echo "Warning: No files found or couldn't be copied"
-        # Current problematic line:
-sudo cp -f "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/" 2>/dev/null || echo "Warning: No files found or couldn't be copied"
 
-# Replace with:
-sudo cp -f "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/" 2>/dev/null && echo "Files copied successfully" || (
-    echo "Listing source directory content:"
-    ls -la "$TEMP_DIR/$GIT_SUBDIR/"
-    echo "Trying direct copy with verbose option:"
-    sudo cp -vf "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/"
-)
+
+       sudo cp -f "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/" 2>/dev/null && echo "Files copied successfully" || (
+            echo "Listing source directory content:"
+            ls -la "$TEMP_DIR/$GIT_SUBDIR/"
+            echo "Trying direct copy with verbose option:"
+            sudo cp -vf "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/"
+            )
         echo "Making all files executable..."
         sudo chmod -R +x "$AUTOBENCH_DIR"
     else
