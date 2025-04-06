@@ -159,5 +159,6 @@ cd $AUTOBENCH_DIR
 echo "Setup complete! You can now run benchmarks."
 
 echo "................................Initial binaries and scripts setup complete.............................."
+echo "cd cldperf-nflx-lab-benchmarks-main/autobench"
 echo "To run benchmarks, execute: sudo start-benchmarks.sh"
 echo "................................Now you can run benchamrks.............................."
