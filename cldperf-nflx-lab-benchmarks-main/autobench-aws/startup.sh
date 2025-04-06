@@ -13,7 +13,7 @@ AUTOBENCH_DIR="$CLDPERF_DIR/autobench"
 #/home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench
 S3_PATH="s3://netflix-files-us-west2/cldperf-nflx-lab-benchmarks-main/"
 GIT_REPO="https://github.com/nfairoza/benchmarks-data.git"
-GIT_SUBDIR="autobench-aws"
+GIT_SUBDIR="cldperf-nflx-lab-benchmarks-main/autobench-aws"
 TEMP_DIR="$HOME_DIR/temp_git_clone"
 LOCAL_RESULTS_DIR="$HOME_DIR/benchmark_results"
 
@@ -134,14 +134,6 @@ else
         echo "Found autobench directory at $AUTOBENCH_DIR"
         echo "Copying files from GitHub to $AUTOBENCH_DIR..."
         sudo cp -f "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/" 2>/dev/null || echo "Warning: No files found or couldn't be copied"
-
-
-       sudo cp -f "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/" 2>/dev/null && echo "Files copied successfully" || (
-            echo "Listing source directory content:"
-            ls -la "$TEMP_DIR/$GIT_SUBDIR/"
-            echo "Trying direct copy with verbose option:"
-            sudo cp -vf "$TEMP_DIR/$GIT_SUBDIR"/* "$AUTOBENCH_DIR/"
-            )
         echo "Making all files executable..."
         sudo chmod -R +x "$AUTOBENCH_DIR"
     else
