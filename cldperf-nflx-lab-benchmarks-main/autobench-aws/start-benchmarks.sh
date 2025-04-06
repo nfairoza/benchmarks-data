@@ -10,8 +10,6 @@ fi
 
 profile="$1"
 
-. ./benchmarks_environment.sh
-
 if [ "$profile" = "no" ]; then
     ./run-benchmarks-noprofile
 elif [ "$profile" = "perfspec" ]; then
