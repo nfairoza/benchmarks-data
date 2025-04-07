@@ -9,9 +9,12 @@ if [ "$#" -lt 1 ]; then
 fi
 
 profile="$1"
+echo "EC2 Instance Type: $EC2_INSTANCE_TYPE"
+echo "Local Results Directory: $LOCAL_RESULTS_DIR"
+export PROFILE_TYPE=$(echo "$profile")
+echo "Profile Type: $PROFILE_TYPE"
 
 if [ "$profile" = "no" ]; then
-  LOCAL_RESULTS_DIR="/home/ubuntu/benchmark_results/noprofile_results"
   export LOCAL_RESULTS_DIR=$(echo "$LOCAL_RESULTS_DIR")
     ./run-benchmarks-noprofile
 elif [ "$profile" = "perfspec" ]; then
