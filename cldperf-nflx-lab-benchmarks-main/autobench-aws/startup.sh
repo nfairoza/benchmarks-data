@@ -29,6 +29,7 @@ sudo apt update
 sudo ubuntu-drivers autoinstall
 sudo apt install build-essential -y
 sudo apt install -y \
+    build-essential \
     sudo \
     openjdk-17-jre-headless \
     openjdk-17-jdk-headless \
@@ -39,11 +40,19 @@ sudo apt install -y \
     docker.io \
     docker-compose \
     cgroup-tools \
-    python3-pip \
     python3 \
+    python3-pip \
+    python3-dev \
+    python3-venv \
     g++ \
     git \
-    tree
+    tree \
+    zip \
+    unzip \
+    wget \
+    curl \
+    htop \
+    iotop
 
 
 install_aws_cli() {
