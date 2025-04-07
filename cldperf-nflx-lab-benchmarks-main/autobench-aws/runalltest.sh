@@ -52,19 +52,17 @@ check_existing_instance() {
     fi
 }
 
-
 launch_and_benchmark() {
     local instance_type=$1
     local short_type=$(echo $instance_type | sed 's/m7a\.//g')
     local name_tag="netflixtest $short_type"
-
+    local log_file="benchmark_${short_type}.log"
 
     check_existing_instance $instance_type
     if [ $? -eq 0 ]; then
         echo "Using existing instance $INSTANCE_ID ($instance_type)..."
     else
         echo "Launching new $instance_type instance..."
-
 
         INSTANCE_ID=$(aws ec2 run-instances \
           --image-id ami-04f167a56786e4b09 \
@@ -87,99 +85,76 @@ launch_and_benchmark() {
         echo "Instance $INSTANCE_ID ($instance_type) is ready."
     fi
 
-
     PUBLIC_IP=$(aws ec2 describe-instances \
       --instance-ids $INSTANCE_ID \
       --query 'Reservations[0].Instances[0].PublicIpAddress' \
       --output text)
 
     echo "Instance $INSTANCE_ID ($instance_type) public IP: $PUBLIC_IP"
-
     echo "Connecting to instance $INSTANCE_ID ($instance_type) and running benchmarks..."
 
-    local log_file="benchmark_${short_type}.log"
+    # Create a temporary script file with the commands to run
+    TMP_SCRIPT=$(mktemp)
+    cat << EOF > $TMP_SCRIPT
+echo "Connected to \$(hostname) - Running $instance_type benchmarks"
 
-    MAX_RETRIES=5
-    RETRY_COUNT=0
-    SSH_SUCCESS=false
+# Check if benchmarks are already running
+if pgrep -f "start-benchmarks.sh" > /dev/null; then
+    echo "Benchmarks are already running on this instance. Exiting."
+    exit 0
+fi
 
-    while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SSH_SUCCESS" = false ]; do
-        echo "SSH attempt $((RETRY_COUNT+1)) to $PUBLIC_IP..." | tee -a $log_file
+# Always download the latest startup script
+echo "Downloading latest startup script..."
+sudo wget -O startup.sh https://raw.githubusercontent.com/nfairoza/benchmarks-data/refs/heads/main/cldperf-nflx-lab-benchmarks-main/autobench-aws/startup.sh
+sudo chmod +x startup.sh
 
-        # Try to establish a connection with a timeout
-        ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no -o ConnectTimeout=10 ubuntu@$PUBLIC_IP "echo SSH connection successful" >> $log_file 2>&1
+# Always run the startup script to ensure latest environment
+echo "Running startup script..."
+sudo ./startup.sh
+fi
 
-        if [ $? -eq 0 ]; then
-            SSH_SUCCESS=true
-            echo "SSH connection established successfully to $instance_type." | tee -a $log_file
+# Change to the autobench directory
+cd /home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench
 
-            # Now run the actual commands
-            ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP << EOF >> $log_file 2>&1
-                echo "Connected to \$(hostname) - Running $instance_type benchmarks"
+# Run benchmarks with no profiling in non-interactive mode
+echo "Running benchmarks with no profiling..."
+sudo ./start-benchmarks.sh no all
 
-                # Check if benchmarks are already running
-                if pgrep -f "start-benchmarks.sh" > /dev/null; then
-                    echo "Benchmarks are already running on this instance. Exiting."
-                    exit 0
-                fi
+# Run benchmarks with perfspec profiling in non-interactive mode
+echo "Running benchmarks with perfspec profiling..."
+sudo ./start-benchmarks.sh perfspec all
 
-                # Download the startup script if not already available
-                if [ ! -f "./startup.sh" ]; then
-                    echo "Downloading startup script..."
-                    sudo wget https://raw.githubusercontent.com/nfairoza/benchmarks-data/refs/heads/main/cldperf-nflx-lab-benchmarks-main/autobench-aws/startup.sh
-                    sudo chmod +x startup.sh
-                fi
+# Run benchmarks with uProf profiling in non-interactive mode
+echo "Running benchmarks with uProf profiling..."
+sudo ./start-benchmarks.sh uProf all
 
-                # Run the startup script if the benchmark directory doesn't exist
-                if [ ! -d "/home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench" ]; then
-                    echo "Running startup script..."
-                    sudo ./startup.sh
-                fi
+# Upload the results
+echo "Uploading results to S3..."
+sudo ./upload-results.sh
 
-                # Change to the autobench directory
-                cd /home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench
-
-                # Run benchmarks with no profiling in non-interactive mode
-                echo "Running benchmarks with no profiling..."
-                sudo ./start-benchmarks.sh no all
-
-                # Run benchmarks with perfspec profiling in non-interactive mode
-                echo "Running benchmarks with perfspec profiling..."
-                sudo ./start-benchmarks.sh perfspec all
-
-                # Run benchmarks with uProf profiling in non-interactive mode
-                echo "Running benchmarks with uProf profiling..."
-                sudo ./start-benchmarks.sh uProf all
-
-                # Upload the results
-                echo "Uploading results to S3..."
-                sudo ./upload-results.sh
-
-                echo "Benchmark process completed for $instance_type."
+echo "Benchmark process completed for $instance_type."
 EOF
-        else
-            RETRY_COUNT=$((RETRY_COUNT+1))
-            if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                echo "SSH connection failed. Retrying in 30 seconds..." | tee -a $log_file
-                sleep 30
-            else
-                echo "Failed to establish SSH connection after $MAX_RETRIES attempts." | tee -a $log_file
-            fi
-        fi
-    done
 
-    echo "Started benchmarks on $instance_type. Check $log_file for progress."
+    # Use SSH with -n flag for non-interactive mode
+    ssh -n -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP "bash -s" < $TMP_SCRIPT >> $log_file 2>&1 &
+
+    # Store the PID of the SSH process
+    SSH_PID=$!
+    echo "Started benchmarks on $instance_type (SSH PID: $SSH_PID). Check $log_file for progress."
+
+    # Clean up temp script
+    rm $TMP_SCRIPT
 }
 
+echo "Starting benchmark launches..."
 
 for instance_type in "${INSTANCE_TYPES[@]}"; do
     launch_and_benchmark "$instance_type" &
     sleep 5  # Small delay to avoid API rate limiting
 done
 
-
-echo "All instances launched or reused. Waiting for background processes to complete..."
-wait
-
-echo "Script completed. All benchmark processes have been initiated."
-echo "Check the individual log files for each instance type."
+echo "All benchmark processes have been initiated in the background."
+echo "You can check the individual log files for each instance type:"
+echo "  benchmark_xlarge.log, benchmark_2xlarge.log, etc."
+echo "The script will continue running benchmarks even if you close this terminal."
