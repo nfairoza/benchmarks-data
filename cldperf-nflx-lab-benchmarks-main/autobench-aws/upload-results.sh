@@ -19,15 +19,17 @@ fi
 
 echo "EC2_INSTANCE_TYPE = $EC2_INSTANCE_TYPE"
 echo "LOCAL_RESULTS_DIR = $LOCAL_RESULTS_DIR"
-echo "Profile Type: $PROFILE_TYPE"
-S3_BUCKET="s3://netflix-files-us-west2/nfx-benchmark-results"
-
-INSTANCE_FOLDER=$(echo "$EC2_INSTANCE_TYPE" | sed -e 's/\./-/g')
 
 if [ -z "$PROFILE_TYPE" ]; then
     PROFILE_TYPE="standard"
     echo "Profile Type not set, using default: $PROFILE_TYPE"
 fi
+
+echo "Profile Type: $PROFILE_TYPE"
+S3_BUCKET="s3://netflix-files-us-west2/nfx-benchmark-results"
+
+INSTANCE_FOLDER=$(echo "$EC2_INSTANCE_TYPE" | sed -e 's/\./-/g')
+
 
 S3_DESTINATION="$S3_BUCKET/${INSTANCE_FOLDER}/${INSTANCE_FOLDER}_${PROFILE_TYPE}_results"
 echo "Will upload to: $S3_DESTINATION"
