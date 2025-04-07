@@ -5,83 +5,156 @@ PATH=/bin:/usr/bin:/usr/sbin:$PATH
 #ALL Benchmark TESTS
 echo "Benchmarks started at: $DATE " >>$DIR/INFO
 
-# Check if multiple containers are running
-# if [[ -z "$GROUP" ]]; then
-#     startprofiling_perfspec mlc
-#     ./benchmarks/mlc.py
-#     stopprofiling_perfspec
-# else
-#     echo "⚠️ Skipping MLC benchmark because multiple containers are running (GROUP=$GROUP)." | tee -a $DIR/INFO
-# fi
-echo "Please select the workload to run"
-options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mem" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
+# Check if the first argument is "all" to run all benchmarks non-interactively
+if [[ "$1" == "all" ]]; then
+    echo "Running all benchmarks without profiling in non-interactive mode..."
 
-PS3="Please select an option (1-${#options[@]}): "
+    # Progress tracker
+    TOTAL_BENCHMARKS=13
+    CURRENT_BENCHMARK=0
 
-select choice in "${options[@]}"; do
-    case "$choice" in
-        "mlc")
-            echo "Running MLC without Profiling..."
-            ./benchmarks/mlc.py
-            ;;
-        "compress-7zip")
-            echo "Running Compress-7zip without Profiling..."
-             ./benchmarks/compress-7zip.py
-            ;;
-        "specjvm2008")
-            echo "Running specjvm2008 without Profiling..."
-            ./benchmarks/specjvm2008.py
-            ;;
-        "ffmpeg")
-            echo "Running ffmpeg without Profiling..."
-             /usr/share/autobench/java17-benchmarks/ffmpeg.py
-            ;;
-        "specjbb2015")
-            echo "Running specjbb2015 without Profiling..."
-             ./benchmarks/specjbb2015.sh
-            ;;
-        "renaissance")
-            echo "Running renaissance without Profiling..."
-             ./benchmarks/renaissance.py
-            ;;
-        "lmbench-bw")
-            echo "Running lmbench-bw without Profiling..."
-             ./benchmarks/lmbench-bw.py
-            ;;
-        "lmbench-mem")
-            echo "Running lmbench-mem without Profiling..."
-             ./benchmarks/lmbench-mem.py
-            ;;
-        "lmbench-ops")
-            echo "Running lmbench-ops without Profiling..."
-             ./benchmarks/lmbench-ops.py
-            ;;
-        "openssl")
-            echo "Running openssl without Profiling..."
-             ./benchmarks/openssl.py
-            ;;
-        "stream")
-            echo "Running stream without Profiling..."
-             ./benchmarks/stream.py
-            ;;
-        "sysbench-cpu")
-            echo "Running sysbench-cpu without Profiling..."
-             ./benchmarks/sysbench-cpu.py
-            ;;
-        "sysbench-mem")
-            echo "Running sysbench-mem without Profiling..."
-             ./benchmarks/sysbench-mem.py
-            ;;
-        "Quit")
-            echo "Exiting the script..."
-            break  
-            ;;
-        *)
-            echo "Invalid option. Try again."
-            ;;
-    esac
-done
+    function update_progress {
+        CURRENT_BENCHMARK=$((CURRENT_BENCHMARK + 1))
+        echo "🔄 Progress: $CURRENT_BENCHMARK/$TOTAL_BENCHMARKS benchmarks completed ($(($CURRENT_BENCHMARK * 100 / $TOTAL_BENCHMARKS))%)"
+    }
 
+    # MLC benchmark
+    echo "⏳ Running MLC without profiling..."
+    ./benchmarks/mlc.py
+    update_progress
+
+    # Compress-7zip benchmark
+    echo "⏳ Running Compress-7zip without profiling..."
+    ./benchmarks/compress-7zip.py
+    update_progress
+
+    # SpecJVM2008 benchmark
+    echo "⏳ Running specjvm2008 without profiling..."
+    ./benchmarks/specjvm2008.py
+    update_progress
+
+    # Renaissance benchmark
+    echo "⏳ Running renaissance without profiling..."
+    ./benchmarks/renaissance.py
+    update_progress
+
+    # FFmpeg benchmark
+    echo "⏳ Running ffmpeg without profiling..."
+    /usr/share/autobench/java17-benchmarks/ffmpeg.py
+    update_progress
+
+    # SpecJBB2015 benchmark
+    echo "⏳ Running specjbb2015 without profiling..."
+    ./benchmarks/specjbb2015.sh
+    update_progress
+
+    # LMbench-bw benchmark
+    echo "⏳ Running lmbench-bw without profiling..."
+    ./benchmarks/lmbench-bw.py
+    update_progress
+
+    # LMbench-mem benchmark
+    echo "⏳ Running lmbench-mem without profiling..."
+    ./benchmarks/lmbench-mem.py
+    update_progress
+
+    # LMbench-ops benchmark
+    echo "⏳ Running lmbench-ops without profiling..."
+    ./benchmarks/lmbench-ops.py
+    update_progress
+
+    # OpenSSL benchmark
+    echo "⏳ Running openssl without profiling..."
+    ./benchmarks/openssl.py
+    update_progress
+
+    # Stream benchmark
+    echo "⏳ Running stream without profiling..."
+    ./benchmarks/stream.py
+    update_progress
+
+    # Sysbench-cpu benchmark
+    echo "⏳ Running sysbench-cpu without profiling..."
+    ./benchmarks/sysbench-cpu.py
+    update_progress
+
+    # Sysbench-mem benchmark
+    echo "⏳ Running sysbench-mem without profiling..."
+    ./benchmarks/sysbench-mem.py
+    update_progress
+
+    echo "🎉 All benchmarks completed successfully!"
+else
+    # Interactive mode - original code
+    echo "Please select the workload to run"
+    options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mem" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
+
+    PS3="Please select an option (1-${#options[@]}): "
+
+    select choice in "${options[@]}"; do
+        case "$choice" in
+            "mlc")
+                echo "Running MLC without Profiling..."
+                ./benchmarks/mlc.py
+                ;;
+            "compress-7zip")
+                echo "Running Compress-7zip without Profiling..."
+                ./benchmarks/compress-7zip.py
+                ;;
+            "specjvm2008")
+                echo "Running specjvm2008 without Profiling..."
+                ./benchmarks/specjvm2008.py
+                ;;
+            "ffmpeg")
+                echo "Running ffmpeg without Profiling..."
+                /usr/share/autobench/java17-benchmarks/ffmpeg.py
+                ;;
+            "specjbb2015")
+                echo "Running specjbb2015 without Profiling..."
+                ./benchmarks/specjbb2015.sh
+                ;;
+            "renaissance")
+                echo "Running renaissance without Profiling..."
+                ./benchmarks/renaissance.py
+                ;;
+            "lmbench-bw")
+                echo "Running lmbench-bw without Profiling..."
+                ./benchmarks/lmbench-bw.py
+                ;;
+            "lmbench-mem")
+                echo "Running lmbench-mem without Profiling..."
+                ./benchmarks/lmbench-mem.py
+                ;;
+            "lmbench-ops")
+                echo "Running lmbench-ops without Profiling..."
+                ./benchmarks/lmbench-ops.py
+                ;;
+            "openssl")
+                echo "Running openssl without Profiling..."
+                ./benchmarks/openssl.py
+                ;;
+            "stream")
+                echo "Running stream without Profiling..."
+                ./benchmarks/stream.py
+                ;;
+            "sysbench-cpu")
+                echo "Running sysbench-cpu without Profiling..."
+                ./benchmarks/sysbench-cpu.py
+                ;;
+            "sysbench-mem")
+                echo "Running sysbench-mem without Profiling..."
+                ./benchmarks/sysbench-mem.py
+                ;;
+            "Quit")
+                echo "Exiting the script..."
+                break
+                ;;
+            *)
+                echo "Invalid option. Try again."
+                ;;
+        esac
+    done
+fi
 
 # Copy to LATEST Directory
 if [[ -z "$GROUP" ]]; then
