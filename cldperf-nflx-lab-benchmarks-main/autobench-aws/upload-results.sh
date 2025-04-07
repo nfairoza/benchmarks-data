@@ -12,7 +12,6 @@ if [ -z "$LOCAL_RESULTS_DIR" ]; then
     exit 1
 fi
 
-
 if [ ! -d "$LOCAL_RESULTS_DIR" ]; then
     echo "Error: LOCAL_RESULTS_DIR directory does not exist: $LOCAL_RESULTS_DIR"
     exit 1
@@ -33,12 +32,10 @@ fi
 S3_DESTINATION="$S3_BUCKET/${INSTANCE_FOLDER}/${INSTANCE_FOLDER}_${PROFILE_TYPE}_results"
 echo "Will upload to: $S3_DESTINATION"
 
-
-echo "Uploading benchmark results to $S3_DESTINATION..."
 aws s3 sync "$LOCAL_RESULTS_DIR" "$S3_DESTINATION" --exclude "*.tmp"
 
 if [ $? -eq 0 ]; then
-    echo "✅ Upload successful!"
+    echo "Upload successful!"
 else
-    echo "❌ Upload failed. Check AWS credentials and permissions."
+    echo "Upload failed. Check AWS credentials and permissions."
 fi
