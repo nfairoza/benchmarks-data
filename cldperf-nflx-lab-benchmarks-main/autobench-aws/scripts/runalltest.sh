@@ -28,6 +28,79 @@ INSTANCE_TYPES=(
     "m7a.metal-48xl"
 )
 
+# Create a persistent benchmark script that will be uploaded to each instance
+create_persistent_script() {
+    cat > persistent_benchmark.sh << 'EOFSCRIPT'
+#!/bin/bash
+# persistent_benchmark.sh - Runs benchmarks that survive SSH disconnections
+
+# Create log directory
+LOGDIR="/home/ubuntu/benchmark_logs"
+mkdir -p $LOGDIR
+
+echo "====== Starting persistent benchmark run at $(date) ======" | tee -a $LOGDIR/master.log
+
+# Check if benchmarks are already running
+if pgrep -f "start-benchmarks.sh" > /dev/null; then
+    echo "Benchmarks are already running. Exiting." | tee -a $LOGDIR/master.log
+    exit 0
+fi
+
+# Download the startup script if not already available
+if [ ! -f "./startup.sh" ]; then
+    echo "Downloading startup script..." | tee -a $LOGDIR/master.log
+    wget https://raw.githubusercontent.com/nfairoza/benchmarks-data/refs/heads/main/cldperf-nflx-lab-benchmarks-main/autobench-aws/startup.sh
+    chmod +x startup.sh
+fi
+
+# Run the startup script if the benchmark directory doesn't exist
+if [ ! -d "/home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench" ]; then
+    echo "Running startup script..." | tee -a $LOGDIR/master.log
+    sudo ./startup.sh > $LOGDIR/setup.log 2>&1
+fi
+
+# Change to the autobench directory
+cd /home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench
+
+# Function to run a benchmark with specific profiling and log outputs
+run_benchmark_set() {
+    PROFILE_TYPE=$1
+    echo "====== Running benchmarks with $PROFILE_TYPE profiling at $(date) ======" | tee -a $LOGDIR/master.log
+    sudo ./start-benchmarks.sh $PROFILE_TYPE all > $LOGDIR/benchmark_${PROFILE_TYPE}.log 2>&1
+
+    if [ $? -eq 0 ]; then
+        echo "✅ $PROFILE_TYPE benchmarks completed successfully at $(date)" | tee -a $LOGDIR/master.log
+    else
+        echo "❌ $PROFILE_TYPE benchmarks failed with exit code $? at $(date)" | tee -a $LOGDIR/master.log
+    fi
+
+    echo "Uploading $PROFILE_TYPE results..." | tee -a $LOGDIR/master.log
+    export PROFILE_TYPE
+    sudo -E ./upload-results.sh > $LOGDIR/upload_${PROFILE_TYPE}.log 2>&1
+
+    if [ $? -eq 0 ]; then
+        echo "✅ $PROFILE_TYPE results uploaded successfully" | tee -a $LOGDIR/master.log
+    else
+        echo "❌ $PROFILE_TYPE results upload failed with exit code $?" | tee -a $LOGDIR/master.log
+    fi
+}
+
+# Run all three benchmark types in sequence
+run_benchmark_set "no"
+run_benchmark_set "perfspec"
+run_benchmark_set "uProf"
+
+echo "====== All benchmarks completed at $(date) ======" | tee -a $LOGDIR/master.log
+echo "Results have been uploaded to S3" | tee -a $LOGDIR/master.log
+
+# Create a completion marker
+touch $LOGDIR/BENCHMARK_COMPLETE
+EOFSCRIPT
+
+    chmod +x persistent_benchmark.sh
+    echo "Created persistent benchmark script."
+}
+
 # Function to check if an instance with the given name tag already exists
 check_existing_instance() {
     local instance_type=$1
@@ -52,19 +125,21 @@ check_existing_instance() {
     fi
 }
 
-
 launch_and_benchmark() {
     local instance_type=$1
     local short_type=$(echo $instance_type | sed 's/m7a\.//g')
     local name_tag="netflixtest $short_type"
+    local log_file="benchmark_${short_type}.log"
 
+    echo "------------------------------------------------------------" | tee -a $log_file
+    echo "Starting process for $instance_type at $(date)" | tee -a $log_file
+    echo "------------------------------------------------------------" | tee -a $log_file
 
     check_existing_instance $instance_type
     if [ $? -eq 0 ]; then
-        echo "Using existing instance $INSTANCE_ID ($instance_type)..."
+        echo "Using existing instance $INSTANCE_ID ($instance_type)..." | tee -a $log_file
     else
-        echo "Launching new $instance_type instance..."
-
+        echo "Launching new $instance_type instance..." | tee -a $log_file
 
         INSTANCE_ID=$(aws ec2 run-instances \
           --image-id ami-04f167a56786e4b09 \
@@ -78,26 +153,21 @@ launch_and_benchmark() {
           --query 'Instances[0].InstanceId' \
           --output text)
 
-        echo "Instance $INSTANCE_ID ($instance_type) is launching..."
+        echo "Instance $INSTANCE_ID ($instance_type) is launching..." | tee -a $log_file
 
         aws ec2 wait instance-running --instance-ids $INSTANCE_ID
-        echo "Instance $INSTANCE_ID ($instance_type) is running. Waiting for status checks..."
+        echo "Instance $INSTANCE_ID ($instance_type) is running. Waiting for status checks..." | tee -a $log_file
 
         aws ec2 wait instance-status-ok --instance-ids $INSTANCE_ID
-        echo "Instance $INSTANCE_ID ($instance_type) is ready."
+        echo "Instance $INSTANCE_ID ($instance_type) is ready." | tee -a $log_file
     fi
-
 
     PUBLIC_IP=$(aws ec2 describe-instances \
       --instance-ids $INSTANCE_ID \
       --query 'Reservations[0].Instances[0].PublicIpAddress' \
       --output text)
 
-    echo "Instance $INSTANCE_ID ($instance_type) public IP: $PUBLIC_IP"
-
-    echo "Connecting to instance $INSTANCE_ID ($instance_type) and running benchmarks..."
-
-    local log_file="benchmark_${short_type}.log"
+    echo "Instance $INSTANCE_ID ($instance_type) public IP: $PUBLIC_IP" | tee -a $log_file
 
     MAX_RETRIES=5
     RETRY_COUNT=0
@@ -113,58 +183,40 @@ launch_and_benchmark() {
             SSH_SUCCESS=true
             echo "SSH connection established successfully to $instance_type." | tee -a $log_file
 
-            # Now run the actual commands
+            # Upload the persistent benchmark script
+            echo "Uploading persistent benchmark script to $instance_type..." | tee -a $log_file
+            scp -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no persistent_benchmark.sh ubuntu@$PUBLIC_IP:/home/ubuntu/ >> $log_file 2>&1
+
+            if [ $? -ne 0 ]; then
+                echo "Failed to upload persistent benchmark script. Retrying..." | tee -a $log_file
+                SSH_SUCCESS=false
+                RETRY_COUNT=$((RETRY_COUNT+1))
+                sleep 10
+                continue
+            fi
+
+            # Start the persistent benchmark script in detached mode with sudo
+            echo "Starting persistent benchmarks on $instance_type in detached mode with sudo..." | tee -a $log_file
             ssh -i "$SSH_KEY_PATH" -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP << EOF >> $log_file 2>&1
-                echo "Connected to \$(hostname) - Running $instance_type benchmarks"
-
-                # Check if benchmarks are already running
-                if pgrep -f "start-benchmarks.sh" > /dev/null; then
-                    echo "Benchmarks are already running on this instance. Exiting."
-                    exit 0
+                echo "Checking for existing benchmark process..."
+                if pgrep -f "persistent_benchmark.sh" > /dev/null; then
+                    echo "Persistent benchmark already running on this instance."
+                else
+                    echo "Launching persistent benchmark in background with sudo..."
+                    chmod +x /home/ubuntu/persistent_benchmark.sh
+                    # Run with sudo but ensure the nohup output is owned by ubuntu user
+                    sudo nohup /home/ubuntu/persistent_benchmark.sh > /home/ubuntu/benchmark_start.log 2>&1 &
+                    echo "Benchmark process started with PID \$!"
                 fi
-
-                # Download the startup script if not already available
-                if [ ! -f "./startup.sh" ]; then
-                    echo "Downloading startup script..."
-                    sudo wget https://raw.githubusercontent.com/nfairoza/benchmarks-data/refs/heads/main/cldperf-nflx-lab-benchmarks-main/autobench-aws/startup.sh
-                    sudo chmod +x startup.sh
-                fi
-
-                # Run the startup script if the benchmark directory doesn't exist
-                if [ ! -d "/home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench" ]; then
-                    echo "Running startup script..."
-                    sudo ./startup.sh
-                fi
-
-                # Change to the autobench directory
-                cd /home/ubuntu/cldperf-nflx-lab-benchmarks-main/autobench
-
-                # Run benchmarks with no profiling in non-interactive mode
-                echo "Running benchmarks with no profiling..."
-                sudo ./start-benchmarks.sh no all
-                
-                # Upload the results
-                echo "Uploading results to S3..."
-                sudo ./upload-results.sh
-
-                # Run benchmarks with perfspec profiling in non-interactive mode
-                echo "Running benchmarks with perfspec profiling..."
-                sudo ./start-benchmarks.sh perfspec all
-
-                # Upload the results
-                echo "Uploading results to S3..."
-                sudo ./upload-results.sh
-
-                # Run benchmarks with uProf profiling in non-interactive mode
-                echo "Running benchmarks with uProf profiling..."
-                sudo ./start-benchmarks.sh uProf all
-
-                # Upload the results
-                echo "Uploading results to S3..."
-                sudo ./upload-results.sh
-
-                echo "Benchmark process completed for $instance_type."
 EOF
+
+            if [ $? -eq 0 ]; then
+                echo "✅ Successfully launched benchmarks on $instance_type in detached mode." | tee -a $log_file
+                echo "You can safely disconnect. Benchmarks will continue running." | tee -a $log_file
+                echo "To check status later, SSH to the instance and view logs in /home/ubuntu/benchmark_logs/" | tee -a $log_file
+            else
+                echo "❌ Failed to start benchmarks on $instance_type." | tee -a $log_file
+            fi
         else
             RETRY_COUNT=$((RETRY_COUNT+1))
             if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
@@ -176,18 +228,19 @@ EOF
         fi
     done
 
-    echo "Started benchmarks on $instance_type. Check $log_file for progress."
+    echo "Completed setup for $instance_type at $(date)" | tee -a $log_file
+    echo "------------------------------------------------------------" | tee -a $log_file
 }
 
+# Create the persistent benchmark script
+create_persistent_script
 
+# Launch instances and start benchmarks
 for instance_type in "${INSTANCE_TYPES[@]}"; do
     launch_and_benchmark "$instance_type" &
     sleep 5  # Small delay to avoid API rate limiting
 done
 
-
-echo "All instances launched or reused. Waiting for background processes to complete..."
-wait
-
-echo "Script completed. All benchmark processes have been initiated."
-echo "Check the individual log files for each instance type."
+echo "All benchmark processes have been initiated on their respective instances."
+echo "You can safely close this terminal - benchmarks will continue running."
+echo "To check status later, SSH to individual instances and check /home/ubuntu/benchmark_logs/master.log"
