@@ -107,7 +107,7 @@ fi
 #     RESULTS="/efs/html/AUTOBENCH/LAB_RESULTS"
 # fi
 
-LOCAL_RESULTS_DIR="/home/ubuntu/benchmark_results"
+
 export LOCAL_RESULTS_DIR=$(echo "$LOCAL_RESULTS_DIR")
 
 if [[ -n "$GROUP" ]]; then
