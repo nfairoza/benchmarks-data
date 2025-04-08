@@ -64,8 +64,6 @@ if [ $? -eq 0 ]; then
     # Clean up the temporary zip file
     rm -f "$ZIP_PATH"
     echo "Temporary zip file removed"
-<<<<<<< HEAD
-=======
 
     echo "Generating updated index.html..."
     ./scripts/generate_index.sh "$S3_BUCKET"
@@ -74,7 +72,6 @@ if [ $? -eq 0 ]; then
     INDEX_PATH="./scripts/index.html"
     aws s3 cp "$INDEX_PATH" "$S3_BUCKET/index.html" --only-show-errors --no-progress
     echo "Successfully uploaded index file to $S3_BUCKET/index.html "
->>>>>>> origin/noor-test
 else
     echo "Upload failed. Check AWS credentials and permissions."
 fi
