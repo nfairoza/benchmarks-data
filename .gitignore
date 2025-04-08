@@ -9,3 +9,4 @@ benchmark_32xlarge.log
 benchmark_48xlarge.log
 benchmark_metal-48xl.log
 index.html
+scripts/persistent_benchmark.sh
