@@ -1,0 +1,227 @@
+#!/bin/bash
+
+. ./benchmarks_environment.sh
+
+PATH=/bin:/usr/bin:/usr/sbin:$PATH
+
+function startprofiling_uProf {
+	nohup bash ./binaries/uProf/start_uProf.sh $DIR $1 >> $DIR/LOG 2>&1 &
+}
+
+function stopprofiling_uProf {
+	nohup bash ./binaries/uProf/stop_uProf.sh >> $DIR/LOG 2>&1 &
+	sleep 10
+}
+
+#ALL Benchmark TESTS
+echo "Benchmarks started at: $DATE " >>$DIR/INFO
+
+# Check if the first argument is "all" to run all benchmarks non-interactively
+if [[ "$1" == "all" ]]; then
+    echo "Running all benchmarks with uProf profiling in non-interactive mode..."
+
+    # Progress tracker
+    TOTAL_BENCHMARKS=13
+    CURRENT_BENCHMARK=0
+
+    function update_progress {
+        CURRENT_BENCHMARK=$((CURRENT_BENCHMARK + 1))
+        echo "🔄 Progress: $CURRENT_BENCHMARK/$TOTAL_BENCHMARKS benchmarks completed ($(($CURRENT_BENCHMARK * 100 / $TOTAL_BENCHMARKS))%)"
+    }
+
+    # MLC benchmark
+    echo "⏳ Running MLC with uProf..."
+    startprofiling_uProf mlc
+    ./benchmarks/mlc.py
+    stopprofiling_uProf
+    update_progress
+
+    # Compress-7zip benchmark
+    echo "⏳ Running Compress-7zip with uProf..."
+    startprofiling_uProf compress-7zip
+    ./benchmarks/compress-7zip.py
+    stopprofiling_uProf
+    update_progress
+
+    # SpecJVM2008 benchmark
+    echo "⏳ Running specjvm2008 with uProf..."
+    startprofiling_uProf specjvm2008
+    ./benchmarks/specjvm2008.py
+    stopprofiling_uProf
+    update_progress
+
+    # Renaissance benchmark
+    echo "⏳ Running renaissance with uProf..."
+    startprofiling_uProf renaissance
+    ./benchmarks/renaissance.py
+    stopprofiling_uProf
+    update_progress
+
+    # FFmpeg benchmark
+    echo "⏳ Running ffmpeg with uProf..."
+    startprofiling_uProf ffmpeg
+    /usr/share/autobench/java17-benchmarks/ffmpeg.py
+    stopprofiling_uProf
+    update_progress
+
+    # SpecJBB2015 benchmark
+    echo "⏳ Running specjbb2015 with uProf..."
+    startprofiling_uProf specjbb2015
+    ./benchmarks/specjbb2015.sh
+    stopprofiling_uProf
+    update_progress
+
+    # LMbench-bw benchmark
+    echo "⏳ Running lmbench-bw with uProf..."
+    startprofiling_uProf lmbench-bw
+    ./benchmarks/lmbench-bw.py
+    stopprofiling_uProf
+    update_progress
+
+    # LMbench-mem benchmark
+    echo "⏳ Running lmbench-mem with uProf..."
+    startprofiling_uProf lmbench-mem
+    ./benchmarks/lmbench-mem.py
+    stopprofiling_uProf
+    update_progress
+
+    # LMbench-ops benchmark
+    echo "⏳ Running lmbench-ops with uProf..."
+    startprofiling_uProf lmbench-ops
+    ./benchmarks/lmbench-ops.py
+    stopprofiling_uProf
+    update_progress
+
+    # OpenSSL benchmark
+    echo "⏳ Running openssl with uProf..."
+    startprofiling_uProf openssl
+    ./benchmarks/openssl.py
+    stopprofiling_uProf
+    update_progress
+
+    # Stream benchmark
+    echo "⏳ Running stream with uProf..."
+    startprofiling_uProf stream
+    ./benchmarks/stream.py
+    stopprofiling_uProf
+    update_progress
+
+    # Sysbench-cpu benchmark
+    echo "⏳ Running sysbench-cpu with uProf..."
+    startprofiling_uProf sysbench-cpu
+    ./benchmarks/sysbench-cpu.py
+    stopprofiling_uProf
+    update_progress
+
+    # Sysbench-mem benchmark
+    echo "⏳ Running sysbench-mem with uProf..."
+    startprofiling_uProf sysbench-mem
+    ./benchmarks/sysbench-mem.py
+    stopprofiling_uProf
+    update_progress
+
+    echo "🎉 All benchmarks completed successfully!"
+else
+    # Interactive mode - original code
+    echo "Please select the workload to run"
+    options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mem" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
+
+    PS3="Please select an option (1-${#options[@]}): "
+
+    select choice in "${options[@]}"; do
+        case "$choice" in
+            "mlc")
+                echo "Running MLC with uProf..."
+                startprofiling_uProf mlc
+                ./benchmarks/mlc.py
+                stopprofiling_uProf
+                ;;
+            "compress-7zip")
+                echo "Running Compress-7zip with uProf..."
+                startprofiling_uProf compress-7zip
+                ./benchmarks/compress-7zip.py
+                stopprofiling_uProf
+                ;;
+            "specjvm2008")
+                echo "Running specjvm2008 with uProf..."
+                startprofiling_uProf specjvm2008
+                ./benchmarks/specjvm2008.py
+                stopprofiling_uProf
+                ;;
+            "ffmpeg")
+                echo "Running ffmpeg with uProf..."
+                startprofiling_uProf ffmpeg
+                /usr/share/autobench/java17-benchmarks/ffmpeg.py
+                stopprofiling_uProf
+                ;;
+            "specjbb2015")
+                echo "Running specjbb2015 with uProf..."
+                startprofiling_uProf specjbb2015
+                ./benchmarks/specjbb2015.sh
+                stopprofiling_uProf
+                ;;
+            "renaissance")
+                echo "Running renaissance with uProf..."
+                startprofiling_uProf renaissance
+                ./benchmarks/renaissance.py
+                stopprofiling_uProf
+                ;;
+            "lmbench-bw")
+                echo "Running lmbench-bw with uProf..."
+                startprofiling_uProf lmbench-bw
+                ./benchmarks/lmbench-bw.py
+                stopprofiling_uProf
+                ;;
+            "lmbench-mem")
+                echo "Running lmbench-mem with uProf..."
+                startprofiling_uProf lmbench-mem
+                ./benchmarks/lmbench-mem.py
+                stopprofiling_uProf
+                ;;
+            "lmbench-ops")
+                echo "Running lmbench-ops with uProf..."
+                startprofiling_uProf lmbench-ops
+                ./benchmarks/lmbench-ops.py
+                stopprofiling_uProf
+                ;;
+            "openssl")
+                echo "Running openssl with uProf..."
+                startprofiling_uProf openssl
+                ./benchmarks/openssl.py
+                stopprofiling_uProf
+                ;;
+            "stream")
+                echo "Running stream with uProf..."
+                startprofiling_uProf stream
+                ./benchmarks/stream.py
+                stopprofiling_uProf
+                ;;
+            "sysbench-cpu")
+                echo "Running sysbench-cpu with uProf..."
+                startprofiling_uProf sysbench-cpu
+                ./benchmarks/sysbench-cpu.py
+                stopprofiling_uProf
+                ;;
+            "sysbench-mem")
+                echo "Running sysbench-mem with uProf..."
+                startprofiling_uProf sysbench-mem
+                ./benchmarks/sysbench-mem.py
+                stopprofiling_uProf
+                ;;
+            "Quit")
+                echo "Exiting the script..."
+                break
+                ;;
+            *)
+                echo "Invalid option. Try again."
+                ;;
+        esac
+    done
+fi
+
+# Copy to LATEST Directory
+if [[ -z "$GROUP" ]]; then
+cp -r $DIR/* $LDIR
+fi
+DATE=$(date '+%m-%d-%Y_%H-%M')
+echo "Benchmarks ended at: $DATE" >> $DIR/INFO
