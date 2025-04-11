@@ -8,9 +8,12 @@ from common import latopscommands
 from common import logfile
 from common import errfile
 
+subprocess.run(['sudo', 'mkdir', '-p', '/mnt'], check=True)
+subprocess.run(['sudo', 'mkdir', '-p', '/mnt/lmbench-ops'], check=True)
+subprocess.run(['sudo', 'chmod', '777', '/mnt/lmbench-ops'], check=True)
+
 tests = ['mmap','pagefault','syscal_null','syscal_write','syscal_read','syscal_stat','syscal_fstat','syscal_open','proc_fork','proc_exec','pipe','tcp','udp','unix']
-if not os.path.exists("/mnt/zeros"): 
-   os.system("dd if=/dev/zero of=/mnt/zeros bs=1M count=1K")
+os.system("dd if=/dev/zero of=/mnt/lmbench-ops/zeros bs=1M count=1K")
 os.system("/usr/lib/lmbench/bin/x86_64-linux-gnu/lat_tcp -s")
 os.system("/usr/lib/lmbench/bin/x86_64-linux-gnu/lat_udp -s")
 

@@ -10,11 +10,12 @@ from common import javaregexList
 from common import logfile
 from common import errfile
 
+subprocess.run(['sudo', 'mkdir', '-p', '/mnt'], check=True)
+subprocess.run(['sudo', 'mkdir', '-p', '/mnt/SPECjvm2008'], check=True)
+subprocess.run(['sudo', 'chmod', '777', '/mnt/SPECjvm2008'], check=True)
+
 cwd = os.getcwd()
-#cmd = 'sudo /usr/lib/jvm/zulu-17-amd64/bin/java -jar /efs/SPECJVM2008/SPECjvm2008_1_01_setup.jar -i silent > /dev/null 2>&1'
-#os.system(cmd)
-#cmd = 'sudo mkdir /mnt/SPECjvm2008; sudo cp -r /SPECjvm2008/* /mnt/SPECjvm2008 > /dev/null 2>&1'
-cmd = 'sudo mkdir /mnt/SPECjvm2008; sudo cp -r ./binaries/SPECJVM2008/* /mnt/SPECjvm2008 > /dev/null 2>&1'
+cmd = 'sudo cp -r ./binaries/SPECJVM2008/* /mnt/SPECjvm2008 > /dev/null 2>&1'
 os.system(cmd)
 for test in javatests:
   os.chdir("/mnt/SPECjvm2008")

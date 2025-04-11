@@ -13,11 +13,11 @@ arr=[]
 results=[]
 cwd = os.getcwd()
 
-# Ensure /mnt exists before copying
-if not os.path.exists("/mnt"):
-    os.makedirs("/mnt")
+subprocess.run(['sudo', 'mkdir', '-p', '/mnt'], check=True)
+subprocess.run(['sudo', 'mkdir', '-p', '/mnt/renaissance'], check=True)
+subprocess.run(['sudo', 'chmod', '777', '/mnt/renaissance'], check=True)
 
-os.system("cp ./binaries/renaissance-gpl-0.16.0.jar /mnt/renaissance-gpl-0.16.0.jar")
+os.system("cp ../binaries/renaissance-gpl-0.16.0.jar /mnt/renaissance/renaissance-gpl-0.16.0.jar")
 
 DIR = os.getenv('DIR')
 os.chdir(DIR)

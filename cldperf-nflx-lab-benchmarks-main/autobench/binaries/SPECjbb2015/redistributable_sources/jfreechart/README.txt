@@ -1,1 +1,0 @@
-The packages in this directory are redistributed under the LGPL V3 license, a copy of which can be found in this directory.

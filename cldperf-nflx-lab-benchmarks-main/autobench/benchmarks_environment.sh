@@ -6,21 +6,30 @@
 MODEL_NAME=$(lscpu | grep "Model name" | awk -F': ' '{print $2}')
 CORES_PER_SOCKET=$(lscpu | grep "Core(s) per socket" | awk '{print $4}')
 SOCKETS=$(lscpu | grep "Socket(s)" | awk '{print $2}')
+THREADS_PER_CORE=$(lscpu | grep "Thread(s) per core" | awk '{print $4}')
+
+# Fallback if any variable is empty (for robustness)
+if [[ -z "$CORES_PER_SOCKET" || -z "$SOCKETS" || -z "$THREADS_PER_CORE" ]]; then
+  echo "Error: Could not retrieve CPU topology from lscpu."
+  exit 1
+fi
+
 TOTAL_CORES=$((CORES_PER_SOCKET * SOCKETS))
-export VCPUS=$((TOTAL_CORES * 2))  # Assuming hyperthreading is enabled
+export VCPUS=$((TOTAL_CORES * THREADS_PER_CORE))  # Assuming hyperthreading is enabled
 
 if [[ -z "$INSTANCE_SIZE" ]]; then
-    #INSTANCE_SIZE=$((TOTAL_CORES / 2))  # Match AWS convention (half of physical cores)
-    INSTANCE_SIZE="metal-$((TOTAL_CORES / 2))xl"  # Match AWS convention (half of physical cores)
+    INSTANCE_SIZE="metal-$((TOTAL_CORES / 2))xl"  # Match AWS naming convention
 fi
 
 # Mapping model name to CPU family
-if echo "$MODEL_NAME" | grep -qi "EPYC 9[0-9][0-9][0-9]"; then
+if echo "$MODEL_NAME" | grep -qi "AMD EPYC 9654"; then
     FAMILY="Genoa"
-elif echo "$MODEL_NAME" | grep -qi "EPYC 9[0-9][0-9][0-9]X"; then
+elif echo "$MODEL_NAME" | grep -qi "AMD EPYC 9655"; then
     FAMILY="Turin"
-elif echo "$MODEL_NAME" | grep -qi "Xeon"; then
-    FAMILY="SapphireRapids"
+elif echo "$MODEL_NAME" | grep -qi "Intel(R) Xeon(R) 6780E"; then
+    FAMILY="GNR"
+elif echo "$MODEL_NAME" | grep -qi "Intel(R) Xeon(R) 6972P"; then
+    FAMILY="SPR"
 else
     FAMILY="Unknown"
 fi
@@ -35,6 +44,8 @@ case "${INSTANCE_SIZE}" in
     24xlarge) INSTANCE_TYPE="24xlarge" ;;
     32xlarge) INSTANCE_TYPE="32xlarge" ;;
     metal-48xl) INSTANCE_TYPE="metal48xl" ;;
+    metal-96xl) INSTANCE_TYPE="metal96xl" ;;
+    metal-144xl) INSTANCE_TYPE="metal144xl" ;;
     *) INSTANCE_TYPE="unknown" ;;
 esac
 
@@ -58,9 +69,12 @@ APPNAME="benchmarkHarness"
 CLUSTER="benchmarkHarness"
 ASG="benchmarkHarness-v000"
 CPUs=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-GPUS=$(nvidia-smi -L | wc -l 2>/dev/null || echo "none")
+GPU_COUNT=$(lspci | grep -i 'nvidia' | wc -l)
+if [[ $GPU_COUNT -gt 0 ]]; then
+  GPUS=$(nvidia-smi -L | wc -l 2>/dev/null || echo "none")
+  GPUMODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader | uniq || echo "None")
+fi
 MEM=$(free -g | awk '/^Mem:/ {print $2}')
-GPUMODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader | uniq || echo "None")
 #-------
 export DATE=$(date '+%m-%d-%Y_%H-%M')
 export TS=`echo $(date '+%m-%d-%Y_%s')`
@@ -212,10 +226,10 @@ else
     export CPUS=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
     export MEM=$(free -g | awk '/^Mem:/ {print $2}')
 fi
-if [[ -z "$GROUP" ]]; then
-	GPUS=$(nvidia-smi -L | wc -l 2>/dev/null || echo "none")
-	GPUMODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader | uniq || echo "None")
-fi
+#if [[ -z "$GROUP" ]]; then
+#	GPUS=$(nvidia-smi -L | wc -l 2>/dev/null || echo "none")
+#	GPUMODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader | uniq || echo "None")
+#fi
 ## log it into INFO File
 echo "ENV:" $ENV  &>> $DIR/INFO
 echo "REGION:" $REGION &>> $DIR/INFO
