@@ -24,7 +24,7 @@ echo "Benchmarks started at: $DATE " >>$DIR/INFO
 #     echo "⚠️ Skipping MLC benchmark because multiple containers are running (GROUP=$GROUP)." | tee -a $DIR/INFO
 # fi
 echo "Please select the workload to run"
-options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mem" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
+options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mem" "lmbench-mhz" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
 
 PS3="Please select an option (1-${#options[@]}): "
 
@@ -71,6 +71,12 @@ select choice in "${options[@]}"; do
             echo "Running lmbench-bw with perfspec..."
              startprofiling_perfspec lmbench-bw
              ./benchmarks/lmbench-bw.py
+             stopprofiling_perfspec
+            ;;
+        "lmbench-mhz")
+            echo "Running lmbench-mhz with perfspec..."
+             startprofiling_perfspec lmbench-mhz
+             ./benchmarks/lmbench-mhz.py
              stopprofiling_perfspec
             ;;
         "lmbench-mem")

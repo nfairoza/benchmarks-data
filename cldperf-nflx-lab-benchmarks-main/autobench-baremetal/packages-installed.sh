@@ -7,6 +7,7 @@ sudo apt install openjdk-17-jdk-headless -y
 sudo apt install linux-headers-$(uname -r) -y
 sudo apt install p7zip-full -y 
 sudo apt install sysbench -y 
+sudo apt install ffmpeg -y 
 sudo apt install lmbench -y
 sudo apt install docker.io -y 
 sudo apt install docker-compose -y
@@ -45,4 +46,7 @@ chmod +x ./binaries/uProf/stop_uProf.sh
 chmod +x ./binaries/perfspect/perfspect
 chmod +x ./binaries/uProf/bin/AMDuProfPcm
 chmod +x ./binaries/mlc/Linux/mlc
+chmod -R +x ./benchmark
+chmod +x -R ./binaries/uprof/bin
+chmod +x -R ./binaries
 

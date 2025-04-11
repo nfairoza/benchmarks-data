@@ -17,7 +17,7 @@ function stopprofiling_uProf {
 echo "Benchmarks started at: $DATE " >>$DIR/INFO
 
 echo "Please select the workload to run"
-options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mem" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
+options=("mlc" "compress-7zip" "specjvm2008" "renaissance" "ffmpeg" "specjbb2015" "lmbench-bw" "lmbench-mhz" "lmbench-mem" "lmbench-ops" "openssl" "stream" "sysbench-cpu" "sysbench-mem" "Quit")
 
 PS3="Please select an option (1-${#options[@]}): "
 
@@ -64,6 +64,12 @@ select choice in "${options[@]}"; do
             echo "Running lmbench-bw with uProf..."
              startprofiling_uProf lmbench-bw
              ./benchmarks/lmbench-bw.py
+             stopprofiling_uProf
+            ;;
+        "lmbench-mhz")
+            echo "Running lmbench-mhz with uProf..."
+             startprofiling_uProf lmbench-mhz
+             ./benchmarks/lmbench-mhz.py
              stopprofiling_uProf
             ;;
         "lmbench-mem")
