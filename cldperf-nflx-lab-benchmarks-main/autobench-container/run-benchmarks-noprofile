@@ -1,0 +1,57 @@
+#!/bin/bash
+. ./benchmarks_environment.sh
+PATH=/bin:/usr/bin:/usr/sbin:$PATH
+
+#ALL Benchmark TESTS
+echo "Benchmarks started at: $DATE " >>$DIR/INFO
+
+# Check if multiple containers are running
+if [[ -z "$CPUSET" ]]; then
+    echo "Running MLC with perfspec..."
+    ./benchmarks/mlc.py
+else
+    echo "⚠️ Skipping MLC benchmark because CPUSET is set (CPUSET=$CPUSET), indicating containerized execution." | tee -a $DIR/INFO
+fi
+
+echo "Running Compress-7zip without Profiling..."
+./benchmarks/compress-7zip.py
+
+echo "Running specjvm2008 without Profiling..."
+./benchmarks/specjvm2008.py
+
+#echo "Running ffmpeg without Profiling..."
+#/usr/share/autobench/java17-benchmarks/ffmpeg.py
+
+#echo "Running specjbb2015 without Profiling..."
+#./benchmarks/specjbb2015.sh
+
+echo "Running renaissance without Profiling..."
+./benchmarks/renaissance.py
+
+echo "Running lmbench-bw without Profiling..."
+./benchmarks/lmbench-bw.py
+
+echo "Running lmbench-mem without Profiling..."
+./benchmarks/lmbench-mem.py
+
+echo "Running lmbench-ops without Profiling..."
+./benchmarks/lmbench-ops.py
+
+echo "Running openssl without Profiling..."
+./benchmarks/openssl.py
+
+echo "Running stream without Profiling..."
+./benchmarks/stream.py
+
+echo "Running sysbench-cpu without Profiling..."
+./benchmarks/sysbench-cpu.py
+
+echo "Running sysbench-mem without Profiling..."
+./benchmarks/sysbench-mem.py
+
+# Copy to LATEST Directory
+if [[ -z "$GROUP" ]]; then
+cp -r $DIR/* $LDIR
+fi
+DATE=$(date '+%m-%d-%Y_%H-%M')
+echo "Benchmarks ended at: $DATE" >> $DIR/INFO
