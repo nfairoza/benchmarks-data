@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# ./runalltest.sh "/c/Users/noorkhan/OneDrive - Advanced Micro Devices Inc/Documents/handson/aws/keypair/noor-ohio.pem"
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 <ssh-key-path>"
     echo "Example: $0 ~/.ssh/my-key.pem"
@@ -69,9 +69,9 @@ run_benchmark_set() {
     sudo ./start-benchmarks.sh $PROFILE_TYPE all > $LOGDIR/benchmark_${PROFILE_TYPE}.log 2>&1
 
     if [ $? -eq 0 ]; then
-        echo "✅ $PROFILE_TYPE benchmarks completed successfully at $(date)" | tee -a $LOGDIR/master.log
+        echo " $PROFILE_TYPE benchmarks completed successfully at $(date)" | tee -a $LOGDIR/master.log
     else
-        echo "❌ $PROFILE_TYPE benchmarks failed with exit code $? at $(date)" | tee -a $LOGDIR/master.log
+        echo " $PROFILE_TYPE benchmarks failed with exit code $? at $(date)" | tee -a $LOGDIR/master.log
     fi
 
     echo "Uploading $PROFILE_TYPE results..." | tee -a $LOGDIR/master.log
@@ -79,16 +79,16 @@ run_benchmark_set() {
     sudo -E ./upload-results.sh > $LOGDIR/upload_${PROFILE_TYPE}.log 2>&1
 
     if [ $? -eq 0 ]; then
-        echo "✅ $PROFILE_TYPE results uploaded successfully" | tee -a $LOGDIR/master.log
+        echo " $PROFILE_TYPE results uploaded successfully" | tee -a $LOGDIR/master.log
     else
-        echo "❌ $PROFILE_TYPE results upload failed with exit code $?" | tee -a $LOGDIR/master.log
+        echo " $PROFILE_TYPE results upload failed with exit code $?" | tee -a $LOGDIR/master.log
     fi
 }
 
 # Run all three benchmark types in sequence
 run_benchmark_set "no"
-run_benchmark_set "perfspec"
-run_benchmark_set "uProf"
+# run_benchmark_set "perfspec"
+# run_benchmark_set "uProf"
 
 echo "====== All benchmarks completed at $(date) ======" | tee -a $LOGDIR/master.log
 echo "Results have been uploaded to S3" | tee -a $LOGDIR/master.log
@@ -142,7 +142,8 @@ launch_and_benchmark() {
         echo "Launching new $instance_type instance..." | tee -a $log_file
 
         INSTANCE_ID=$(aws ec2 run-instances \
-          --image-id ami-04f167a56786e4b09 \
+        # --image-id ami-04f167a56786e4b09 \ 24 version ubuntu
+          --image-id ami-0c3b809fcf2445b6a \ #22.04 version ubuntu
           --instance-type $instance_type \
           --key-name noor-ohio \
           --security-group-ids sg-0af511081e75fe69e \
@@ -211,11 +212,11 @@ launch_and_benchmark() {
 EOF
 
             if [ $? -eq 0 ]; then
-                echo "✅ Successfully launched benchmarks on $instance_type in detached mode." | tee -a $log_file
+                echo "Successfully launched benchmarks on $instance_type in detached mode." | tee -a $log_file
                 echo "You can safely disconnect. Benchmarks will continue running." | tee -a $log_file
                 echo "To check status later, SSH to the instance and view logs in /home/ubuntu/benchmark_logs/" | tee -a $log_file
             else
-                echo "❌ Failed to start benchmarks on $instance_type." | tee -a $log_file
+                echo "Failed to start benchmarks on $instance_type." | tee -a $log_file
             fi
         else
             RETRY_COUNT=$((RETRY_COUNT+1))
