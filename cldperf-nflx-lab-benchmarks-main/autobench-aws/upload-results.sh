@@ -26,7 +26,7 @@ if [ -z "$PROFILE_TYPE" ]; then
 fi
 
 echo "Profile Type: $PROFILE_TYPE"
-S3_BUCKET="s3://netflix-files-us-west2/nfx-benchmark-results"
+S3_BUCKET="s3://netflix-files-us-west2/nfx-benchmark-results/ubuntu2204"
 
 # Format instance name by replacing dots with hyphens
 INSTANCE_FOLDER=$(echo "$EC2_INSTANCE_TYPE" | sed -e 's/\./-/g')

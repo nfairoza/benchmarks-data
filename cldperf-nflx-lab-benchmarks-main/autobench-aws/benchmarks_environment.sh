@@ -108,13 +108,16 @@ fi
 # fi
 
 
+if [ -z "$LOCAL_RESULTS_DIR" ]; then
+    LOCAL_RESULTS_DIR="/home/ubuntu/benchmark_results"
+fi
 export LOCAL_RESULTS_DIR=$(echo "$LOCAL_RESULTS_DIR")
 
-if [[ -n "$GROUP" ]]; then
-    RESULTS="$LOCAL_RESULTS_DIR/$GROUP"
-else
-    RESULTS="$LOCAL_RESULTS_DIR"
-fi
+# if [[ -n "$GROUP" ]]; then
+#     RESULTS="$LOCAL_RESULTS_DIR/$GROUP"
+# else
+#     RESULTS="$LOCAL_RESULTS_DIR"
+# fi
 
 export RESULTS
 export DIR="$RESULTS/$INSTANCE-$BASEOS-$KERNEL-$JVM-$GC-$Heap-$TS"

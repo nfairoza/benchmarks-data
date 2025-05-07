@@ -18,6 +18,7 @@ export PROFILE_TYPE=$(echo "$profile")
 echo "Profile Type: $PROFILE_TYPE"
 
 if [ "$profile" = "no" ]; then
+  LOCAL_RESULTS_DIR="/home/ubuntu/benchmark_results/noprofiling_results"
   export LOCAL_RESULTS_DIR=$(echo "$LOCAL_RESULTS_DIR")
   if [ "$run_all" = "all" ]; then
     ./run-benchmarks-noprofile all

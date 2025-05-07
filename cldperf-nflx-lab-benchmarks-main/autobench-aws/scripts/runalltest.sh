@@ -17,15 +17,15 @@ chmod 400 "$SSH_KEY_PATH"
 
 INSTANCE_TYPES=(
     "m7a.xlarge"
-    "m7a.2xlarge"
-    "m7a.4xlarge"
-    "m7a.8xlarge"
-    "m7a.12xlarge"
-    "m7a.16xlarge"
-    "m7a.24xlarge"
-    "m7a.32xlarge"
-    "m7a.48xlarge"
-    "m7a.metal-48xl"
+    # "m7a.2xlarge"
+    # "m7a.4xlarge"
+    # "m7a.8xlarge"
+    # "m7a.12xlarge"
+    # "m7a.16xlarge"
+    # "m7a.24xlarge"
+    # "m7a.32xlarge"
+    # "m7a.48xlarge"
+    # "m7a.metal-48xl"
 )
 
 # Create a persistent benchmark script that will be uploaded to each instance
@@ -142,8 +142,7 @@ launch_and_benchmark() {
         echo "Launching new $instance_type instance..." | tee -a $log_file
 
         INSTANCE_ID=$(aws ec2 run-instances \
-        # --image-id ami-04f167a56786e4b09 \ 24 version ubuntu
-          --image-id ami-0c3b809fcf2445b6a \ #22.04 version ubuntu
+          --image-id ami-0c3b809fcf2445b6a \
           --instance-type $instance_type \
           --key-name noor-ohio \
           --security-group-ids sg-0af511081e75fe69e \
