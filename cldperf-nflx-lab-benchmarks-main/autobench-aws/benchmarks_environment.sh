@@ -112,6 +112,7 @@ if [ -z "$LOCAL_RESULTS_DIR" ]; then
     LOCAL_RESULTS_DIR="/home/ubuntu/benchmark_results"
 fi
 export LOCAL_RESULTS_DIR=$(echo "$LOCAL_RESULTS_DIR")
+export RESULTS="$LOCAL_RESULTS_DIR"
 
 # if [[ -n "$GROUP" ]]; then
 #     RESULTS="$LOCAL_RESULTS_DIR/$GROUP"
@@ -119,7 +120,9 @@ export LOCAL_RESULTS_DIR=$(echo "$LOCAL_RESULTS_DIR")
 #     RESULTS="$LOCAL_RESULTS_DIR"
 # fi
 
-export RESULTS
+
+export DIR="$RESULTS/$INSTANCE-$BASEOS-$KERNEL-$JVM-$GC-$Heap-$TS"
+export LDIR="$RESULTS/$INSTANCE-LATEST"
 export DIR="$RESULTS/$INSTANCE-$BASEOS-$KERNEL-$JVM-$GC-$Heap-$TS"
 export LDIR="$RESULTS/$INSTANCE-LATEST"
 
