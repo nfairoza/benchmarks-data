@@ -152,6 +152,10 @@ launch_and_benchmark() {
           --iam-instance-profile Name=testadmin \
           --query 'Instances[0].InstanceId' \
           --output text)
+        if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" == "None" ]; then
+            echo " Failed to launch instance. Check AWS credentials and limits."
+            return 1
+        fi
 
         echo "Instance $INSTANCE_ID ($instance_type) is launching..." | tee -a $log_file
 
@@ -237,8 +241,7 @@ create_persistent_script
 
 # Launch instances and start benchmarks
 for instance_type in "${INSTANCE_TYPES[@]}"; do
-    launch_and_benchmark "$instance_type" &
-    sleep 5  # Small delay to avoid API rate limiting
+    launch_and_benchmark "$instance_type" 
 done
 
 echo "All benchmark processes have been initiated on their respective instances."
