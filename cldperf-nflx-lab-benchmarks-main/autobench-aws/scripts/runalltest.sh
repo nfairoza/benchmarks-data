@@ -17,15 +17,15 @@ chmod 400 "$SSH_KEY_PATH"
 
 INSTANCE_TYPES=(
     "m7a.xlarge"
-    # "m7a.2xlarge"
-    # "m7a.4xlarge"
-    # "m7a.8xlarge"
-    # "m7a.12xlarge"
-    # "m7a.16xlarge"
-    # "m7a.24xlarge"
-    # "m7a.32xlarge"
-    # "m7a.48xlarge"
-    # "m7a.metal-48xl"
+    "m7a.2xlarge"
+    "m7a.4xlarge"
+    "m7a.8xlarge"
+    "m7a.12xlarge"
+    "m7a.16xlarge"
+    "m7a.24xlarge"
+    "m7a.32xlarge"
+    "m7a.48xlarge"
+    "m7a.metal-48xl"
 )
 
 # Create a persistent benchmark script that will be uploaded to each instance
@@ -87,12 +87,16 @@ run_benchmark_set() {
 
 # Run all three benchmark types in sequence
 run_benchmark_set "no"
-# run_benchmark_set "perfspec"
-# run_benchmark_set "uProf"
+run_benchmark_set "perfspec"
+run_benchmark_set "uProf"
 
 echo "====== All benchmarks completed at $(date) ======" | tee -a $LOGDIR/master.log
-echo "Results have been uploaded to S3" | tee -a $LOGDIR/master.log
 
+echo "Results have been uploaded to S3" | tee -a $LOGDIR/master.log
+wget https://raw.githubusercontent.com/nfairoza/benchmarks-data/refs/heads/main/cldperf-nflx-lab-benchmarks-main/autobench-aws/scripts/generate_index.sh
+sudo chmod +x generate_index.sh
+sudo ./generate_index.sh s3://netflix-files-us-west2/nfx-benchmark-results/
+echo "Index is generated and has been uploaded to S3" | tee -a $LOGDIR/master.log
 # Create a completion marker
 touch $LOGDIR/BENCHMARK_COMPLETE
 EOFSCRIPT
@@ -241,7 +245,7 @@ create_persistent_script
 
 # Launch instances and start benchmarks
 for instance_type in "${INSTANCE_TYPES[@]}"; do
-    launch_and_benchmark "$instance_type" 
+    launch_and_benchmark "$instance_type"
 done
 
 echo "All benchmark processes have been initiated on their respective instances."

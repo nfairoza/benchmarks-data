@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# ./generate_index.sh s3://netflix-files-us-west2/nfx-benchmark-results/
 BUCKET_URL="$1"
 
 if [ -z "$BUCKET_URL" ]; then
@@ -317,3 +317,9 @@ rm -f ./ascii_tree_generator.py
 
 echo "Successful: ASCII tree index.html generated at: $OUTPUT"
 echo "Open this file in your browser to navigate the S3 bucket structure"
+
+echo "Uploading index.html to S3..."
+aws s3 cp "$OUTPUT" "${BUCKET_URL}index.html" --content-type "text/html"
+
+echo "Upload complete. Files accessible at:"
+echo "https://$BUCKET.s3.amazonaws.com/${PREFIX}index.html"

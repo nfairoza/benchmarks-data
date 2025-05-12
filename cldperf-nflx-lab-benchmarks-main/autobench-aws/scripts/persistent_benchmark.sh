@@ -53,9 +53,9 @@ run_benchmark_set() {
 }
 
 # Run all three benchmark types in sequence
-run_benchmark_set "no"
+# run_benchmark_set "no"
 # run_benchmark_set "perfspec"
-# run_benchmark_set "uProf"
+run_benchmark_set "uProf"
 
 echo "====== All benchmarks completed at $(date) ======" | tee -a $LOGDIR/master.log
 echo "Results have been uploaded to S3" | tee -a $LOGDIR/master.log
